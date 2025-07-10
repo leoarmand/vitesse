@@ -7,4 +7,6 @@
     <string name="search">Rechercher</string>
     <string name="clear">Supprimer</string>
     <string name="default_avatar">Avatar par défaut</string>
+    <string name="no_candidate">Aucun candidat</string>
+    <string name="go_back">Retour</string>
 </resources>

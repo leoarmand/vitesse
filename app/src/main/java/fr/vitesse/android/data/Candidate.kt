@@ -1,9 +1,9 @@
 package fr.vitesse.android.data
 
-import androidx.compose.runtime.Composable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
+import java.time.LocalDate
 
 @Entity(tableName = "candidates")
 data class Candidate(
@@ -13,8 +13,11 @@ data class Candidate(
     val phoneNumber: String,
     val firstName: String,
     val lastName: String,
+    val birthday: LocalDate,
+    val salary: Double,
     val note: String,
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = false,
+    val avatarPath: String? = null,
 ) : Serializable {
     val fullName: String get() = "$firstName ${lastName.uppercase()}"
 }

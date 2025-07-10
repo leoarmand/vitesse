@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -42,32 +44,37 @@ import androidx.compose.ui.unit.dp
 import fr.vitesse.android.data.Candidate
 import fr.vitesse.android.R
 
-fun computeFilteredCandidates(
-    candidates: List<Candidate>,
-    selectedTabIndex: Int,
-    searchQuery: String
-): List<Candidate> {
-    return candidates.filter {
-        val matchesSearch = it.fullName.contains(searchQuery, ignoreCase = true) ||
-                it.note.contains(searchQuery, ignoreCase = true)
-        val matchesTab = when (selectedTabIndex) {
-            0 -> true
-            1 -> it.isFavorite
-            else -> true
-        }
-        matchesSearch && matchesTab
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     candidates: List<Candidate> = emptyList(),
-    onCandidateClick: (Candidate) -> Unit = {},
+    onCandidateClick: () -> Unit = {},
 ) {
+    var isLoading by remember { mutableStateOf(false) }
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     var searchQuery by remember { mutableStateOf("") }
+
+    fun computeFilteredCandidates(
+        candidates: List<Candidate>,
+        selectedTabIndex: Int,
+        searchQuery: String
+    ): List<Candidate> {
+        isLoading = true
+        val fCandidates = candidates.filter {
+            val matchesSearch = it.fullName.contains(searchQuery, ignoreCase = true) ||
+                    it.note.contains(searchQuery, ignoreCase = true)
+            val matchesTab = when (selectedTabIndex) {
+                0 -> true
+                1 -> it.isFavorite
+                else -> true
+            }
+            matchesSearch && matchesTab
+        }
+        isLoading = false
+        return fCandidates
+    }
+
     val filteredCandidates by remember(candidates, selectedTabIndex, searchQuery) {
         mutableStateOf(
             computeFilteredCandidates(
@@ -96,8 +103,9 @@ fun HomeScreen(
     ) { contentPadding ->
         CandidateList(
             modifier = modifier.padding(contentPadding),
+            isLoading,
             candidates = filteredCandidates,
-            onCandidateClick = onCandidateClick
+            onCandidateClick = { onCandidateClick }
         )
     }
 }
@@ -164,15 +172,46 @@ private fun SearchCandidateBar(
 @Composable
 private fun CandidateList(
     modifier: Modifier = Modifier,
+    isLoading: Boolean,
     candidates: List<Candidate>,
-    onCandidateClick: (Candidate) -> Unit,
+    onCandidateClick: (Long) -> Unit,
 ) {
-    LazyColumn(modifier) {
-        items(candidates) { candidate ->
-            HomeCell(
-                candidate = candidate,
-                onCandidateClick = onCandidateClick
-            )
+    when {
+        isLoading -> {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+
+        candidates.isEmpty() -> {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.no_candidate),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+        }
+
+        else -> {
+            LazyColumn(modifier) {
+                items(candidates) { candidate ->
+                    HomeCell(
+                        candidate = candidate,
+                        onCandidateClick = onCandidateClick
+                    )
+                }
+            }
         }
     }
 }
@@ -180,12 +219,12 @@ private fun CandidateList(
 @Composable
 private fun HomeCell(
     candidate: Candidate,
-    onCandidateClick: (Candidate) -> Unit,
+    onCandidateClick: (Long) -> Unit,
 ) {
     Row(
         modifier = Modifier
             .clickable {
-                onCandidateClick(candidate)
+                onCandidateClick(candidate.id)
             }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically

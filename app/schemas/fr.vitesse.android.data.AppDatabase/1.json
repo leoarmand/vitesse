@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "363b7e373ad325397f00411e09c7782e",
+    "identityHash": "e4d43385344c9d20f24a7ddf41e536b7",
     "entities": [
       {
         "tableName": "candidates",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `email` TEXT NOT NULL, `phoneNumber` TEXT NOT NULL, `firstName` TEXT NOT NULL, `lastName` TEXT NOT NULL, `note` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `email` TEXT NOT NULL, `phoneNumber` TEXT NOT NULL, `firstName` TEXT NOT NULL, `lastName` TEXT NOT NULL, `birthday` TEXT NOT NULL, `salary` REAL NOT NULL, `note` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL, `avatarPath` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -39,6 +39,18 @@
             "notNull": true
           },
           {
+            "fieldPath": "birthday",
+            "columnName": "birthday",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "salary",
+            "columnName": "salary",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
             "fieldPath": "note",
             "columnName": "note",
             "affinity": "TEXT",
@@ -49,6 +61,11 @@
             "columnName": "isFavorite",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "avatarPath",
+            "columnName": "avatarPath",
+            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -61,7 +78,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '363b7e373ad325397f00411e09c7782e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e4d43385344c9d20f24a7ddf41e536b7')"
     ]
   }
 }

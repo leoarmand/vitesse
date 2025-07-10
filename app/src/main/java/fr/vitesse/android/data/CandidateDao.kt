@@ -14,6 +14,9 @@ interface CandidateDao {
     @Query("SELECT * FROM candidates")
     suspend fun getAll(): List<Candidate>
 
+    @Query("SELECT * FROM candidates WHERE id = :candidateId")
+    suspend fun getCandidateById(candidateId: Long): Candidate
+
     @Insert
     suspend fun insert(candidate: Candidate)
 

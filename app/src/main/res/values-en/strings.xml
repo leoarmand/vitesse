@@ -7,4 +7,6 @@
     <string name="search">Search</string>
     <string name="clear">Clear</string>
     <string name="default_avatar">Default avatar</string>
+    <string name="no_candidate">No candidate</string>
+    <string name="go_back">Go back</string>
 </resources>

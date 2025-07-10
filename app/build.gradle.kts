@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "fr.vitesse.android"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -46,6 +46,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.navigation.common.android)
     //Navigation compose deps
     val navComposeVersion = "2.7.7"
     implementation("androidx.navigation:navigation-compose:$navComposeVersion")

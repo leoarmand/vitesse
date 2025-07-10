@@ -13,4 +13,6 @@ class CandidateService @Inject constructor(
     }
 
     suspend fun getAllCandidates(): List<Candidate> = repository.getAll()
+
+    suspend fun getCandidateById(candidateId: Long): Candidate = repository.getCandidateById(candidateId)
 }
