@@ -16,8 +16,5 @@ data class Candidate(
     val note: String,
     val isFavorite: Boolean = false
 ) : Serializable {
-    @Composable
-    fun getFullName(): String {
-        return "$firstName ${lastName.uppercase()}"
-    }
+    val fullName: String get() = "$firstName ${lastName.uppercase()}"
 }

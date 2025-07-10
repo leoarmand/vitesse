@@ -12,7 +12,7 @@ class CandidateRepository @Inject constructor(
         val defaultNote = "Supporting line text lorem ipsum dolor site amet, consectetur. Dolor site amet consectetur."
         val candidates = listOf(
             Candidate(email = "alice.durand@gmail.com", phoneNumber = defaultPhoneNumber, firstName = "Alice", lastName = "Durand", note = defaultNote),
-            Candidate(email = "bob.martin@gmail.com", phoneNumber = defaultPhoneNumber, firstName = "Bob", lastName = "Martin", note = defaultNote),
+            Candidate(email = "bob.martin@gmail.com", phoneNumber = defaultPhoneNumber, firstName = "Bob", lastName = "Martin", note = defaultNote, isFavorite = true),
             Candidate(email = "clara.petit@gmail.com", phoneNumber = defaultPhoneNumber, firstName = "Clara", lastName = "Petit", note = defaultNote)
         )
         dao.insertAll(candidates)
