@@ -49,7 +49,7 @@ import fr.vitesse.android.R
 fun HomeScreen(
     modifier: Modifier = Modifier,
     candidates: List<Candidate> = emptyList(),
-    onCandidateClick: () -> Unit = {},
+    onCandidateClick: (Long) -> Unit = {},
 ) {
     var isLoading by remember { mutableStateOf(false) }
     var selectedTabIndex by remember { mutableIntStateOf(0) }
@@ -105,7 +105,7 @@ fun HomeScreen(
             modifier = modifier.padding(contentPadding),
             isLoading,
             candidates = filteredCandidates,
-            onCandidateClick = { onCandidateClick }
+            onCandidateClick = onCandidateClick
         )
     }
 }

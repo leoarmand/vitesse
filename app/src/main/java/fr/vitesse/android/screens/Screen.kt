@@ -13,9 +13,9 @@ sealed class Screen(
     data object CandidateDetails : Screen(
         route = "candidateDetails/{candidateId}",
         navArguments = listOf(navArgument("candidateId") {
-            type = NavType.StringType
+            type = NavType.LongType
         })
     ) {
-        fun createRoute(candidateId: String) = "candidateDetails/$candidateId"
+        fun createRoute(candidateId: Long) = "candidateDetails/$candidateId"
     }
 }

@@ -9,4 +9,10 @@
     <string name="default_avatar">Avatar par défaut</string>
     <string name="no_candidate">Aucun candidat</string>
     <string name="go_back">Retour</string>
+    <string name="delete">Supprimer</string>
+    <string name="edit">Éditer</string>
+    <string name="favorite">Favoris</string>
+    <string name="call">Appel</string>
+    <string name="sms">SMS</string>
+    <string name="email">Email</string>
 </resources>

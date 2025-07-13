@@ -12,7 +12,7 @@ class CandidateService @Inject constructor(
         if (existing.isEmpty()) repository.insertDefaultCandidates()
     }
 
-    suspend fun getAllCandidates(): List<Candidate> = repository.getAll()
+    suspend fun getAll(): List<Candidate> = repository.getAll()
 
     suspend fun getCandidateById(candidateId: Long): Candidate = repository.getCandidateById(candidateId)
 }

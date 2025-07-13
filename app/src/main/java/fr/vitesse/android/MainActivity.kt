@@ -6,7 +6,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -26,8 +29,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    val homeViewModel: HomeViewModel by viewModels()
-    val candidateDetailsViewModel: CandidateDetailsViewModel by viewModels()
     @Inject lateinit var candidateService: CandidateService
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,33 +41,40 @@ class MainActivity : ComponentActivity() {
             setContent {
                 val navController = rememberNavController()
                 VitesseTheme {
-                    VitesseNavHost(navController, homeViewModel.candidates.value)
+                    VitesseNavHost(navController)
                 }
             }
         }
     }
 
     @Composable
-    fun VitesseNavHost(navHostController: NavHostController, candidates: List<Candidate>) {
+    fun VitesseNavHost(navHostController: NavHostController) {
         NavHost(
             navController = navHostController,
             startDestination = Screen.Home.route
         ) {
             composable(route = Screen.Home.route) {
+                val homeViewModel: HomeViewModel =
+                    hiltViewModel()
                 HomeScreen(
                     modifier = Modifier,
-                    candidates,
-                    /*onCandidateClick = navHostController.navigate(
-                        Screen.CandidateDetails.createRoute(
-                            candidateId = it.id
+                    candidates = homeViewModel.candidates.value,
+                    onCandidateClick = {
+                        id ->
+                        navHostController.navigate(
+                            Screen.CandidateDetails.createRoute(
+                                candidateId = id
+                            )
                         )
-                    )*/
+                    }
                 )
             }
             composable(
                 route = Screen.CandidateDetails.route,
                 arguments = Screen.CandidateDetails.navArguments
             ) { backStackEntry ->
+                val candidateDetailsViewModel: CandidateDetailsViewModel =
+                    hiltViewModel(backStackEntry)
                 CandidateDetailsScreen(
                     candidateDetailsViewModel = candidateDetailsViewModel,
                     onBackClick = { navHostController.navigateUp() },

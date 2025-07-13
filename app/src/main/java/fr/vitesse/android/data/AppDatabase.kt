@@ -17,5 +17,6 @@ class Converters {
     fun fromLocalDate(date: LocalDate?): String? = date?.toString()
 
     @TypeConverter
+    //LocalDate.parse requires API 26
     fun toLocalDate(dateString: String?): LocalDate? = dateString?.let { LocalDate.parse(it) }
 }

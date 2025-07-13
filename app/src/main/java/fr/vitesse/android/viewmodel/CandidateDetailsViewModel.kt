@@ -20,9 +20,9 @@ class CandidateDetailsViewModel @Inject constructor(
     val candidate: StateFlow<Candidate?> = _candidate
 
     init {
-        val candidateId = savedStateHandle.get<Long>("candidateId")
-        viewModelScope.launch {
-            if (candidateId != null) {
+        val candidateId: Long? = savedStateHandle["candidateId"]
+        if (candidateId != null) {
+            viewModelScope.launch {
                 _candidate.value = candidateService.getCandidateById(candidateId)
             }
         }
