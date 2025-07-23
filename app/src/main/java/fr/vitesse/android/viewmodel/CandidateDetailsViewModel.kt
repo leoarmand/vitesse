@@ -27,4 +27,22 @@ class CandidateDetailsViewModel @Inject constructor(
             }
         }
     }
+
+    fun toggleCandidateFavorite() {
+        viewModelScope.launch {
+            _candidate.value?.let {
+                val updated = it.copy(isFavorite = !it.isFavorite)
+                candidateService.toggleCandidateFavorite(updated)
+                _candidate.value = updated
+            }
+        }
+    }
+
+    fun deleteCandidate () {
+        viewModelScope.launch {
+            _candidate.value?.let {
+                candidateService.deleteCandidate(_candidate.value!!)
+            }
+        }
+    }
 }

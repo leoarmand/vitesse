@@ -15,4 +15,15 @@
     <string name="call">Appel</string>
     <string name="sms">SMS</string>
     <string name="email">Email</string>
+    <string name="about">À propos</string>
+    <string name="birthday">Anniversaire</string>
+    <string name="years">Ans</string>
+    <string name="birthday_pattern">dd/MM/yyyy</string>
+    <string name="salary_expectations">Prétentions salariales</string>
+    <string name="average_amount">Soit</string>
+    <string name="notes">Notes</string>
+    <string name="deletion">Suppression</string>
+    <string name="are_you_sure_you_want_to_delete_candidate">Etes-vous sûr de vouloir supprimer ce candidat? Cette action est irréversible</string>
+    <string name="confirm">Confirmer</string>
+    <string name="cancel">Annuler</string>
 </resources>

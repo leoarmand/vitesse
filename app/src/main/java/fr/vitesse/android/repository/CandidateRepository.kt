@@ -2,6 +2,7 @@ package fr.vitesse.android.repository
 
 import fr.vitesse.android.data.Candidate
 import fr.vitesse.android.data.CandidateDao
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -18,7 +19,16 @@ class CandidateRepository @Inject constructor(
         dao.insertAll(candidates)
     }
 
-    suspend fun getAll(): List<Candidate> = dao.getAll()
+    fun getAll(): Flow<List<Candidate>> = dao.getAll()
 
     suspend fun getCandidateById(candidateId: Long): Candidate = dao.getCandidateById(candidateId)
+
+    suspend fun toggleCandidateFavorite(candidate: Candidate) {
+        val updated = candidate.copy(isFavorite = !candidate.isFavorite)
+        dao.upsert(updated)
+    }
+
+    suspend fun deleteCandidate(candidate: Candidate) {
+        dao.delete(candidate)
+    }
 }

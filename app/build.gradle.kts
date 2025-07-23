@@ -51,6 +51,9 @@ dependencies {
     val navComposeVersion = "2.7.7"
     implementation("androidx.navigation:navigation-compose:$navComposeVersion")
 
+    //Android Material deps
+    implementation("com.google.android.material:material:1.12.0")
+
     //Room deps
     val roomVersion = "2.7.2"
     implementation("androidx.room:room-runtime:$roomVersion")
@@ -60,10 +63,15 @@ dependencies {
     val daggerHiltVersion = "2.56.2"
     implementation("com.google.dagger:hilt-android:$daggerHiltVersion")
     ksp("com.google.dagger:hilt-android-compiler:$daggerHiltVersion")
-
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
-    implementation("com.google.android.material:material:1.6.0")
+    //Ktor deps
+    val ktorVersion = "2.3.12"
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-android:$ktorVersion")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

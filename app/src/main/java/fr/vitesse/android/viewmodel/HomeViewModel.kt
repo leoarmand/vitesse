@@ -20,7 +20,9 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _candidates.value = candidateService.getAll()
+            candidateService.getAll().collect { list ->
+                _candidates.value = list
+            }
         }
     }
 }
