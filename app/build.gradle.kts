@@ -5,6 +5,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("androidx.room")
     id("com.google.dagger.hilt.android")
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -72,6 +73,8 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+
+    kotlin("plugin.serialization")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
