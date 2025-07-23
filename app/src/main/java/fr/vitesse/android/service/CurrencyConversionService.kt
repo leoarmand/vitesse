@@ -7,18 +7,21 @@ import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
+import javax.inject.Inject
 
-class CurrencyConversionService {
-    val client = HttpClient(CIO) {
+class CurrencyConversionService  @Inject constructor(
+    private val httpClient: HttpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
             json()
         }
     }
+) {
     val currenciesEurUrl = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json"
+    val gbpKey = "gbp"
 
     suspend fun convertEuroToPounds(amountInEur: Double): Double {
-        val jsonElementResponse = client.get(currenciesEurUrl).body<CurrencyResponse>()
-        val gbpRate = jsonElementResponse.eur["gbp"]!!
+        val jsonElementResponse = httpClient.get(currenciesEurUrl).body<CurrencyResponse>()
+        val gbpRate = jsonElementResponse.eur[gbpKey]!!
 
         return amountInEur * gbpRate
     }
