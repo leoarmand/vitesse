@@ -28,11 +28,13 @@ class CandidateDetailsViewModel @Inject constructor(
         }
     }
 
-    fun toggleCandidateFavorite() {
+    fun toggleCandidateFavorite(
+        candidateId: Long
+    ) {
         viewModelScope.launch {
             _candidate.value?.let {
-                val updated = it.copy(isFavorite = !it.isFavorite)
-                candidateService.toggleCandidateFavorite(updated)
+                candidateService.toggleCandidateFavorite(candidateId)
+                val updated = candidateService.getCandidateById(candidateId)
                 _candidate.value = updated
             }
         }

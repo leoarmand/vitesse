@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -21,8 +20,6 @@ import fr.vitesse.android.screens.HomeScreen
 import fr.vitesse.android.screens.Screen
 import fr.vitesse.android.service.CandidateService
 import fr.vitesse.android.ui.theme.VitesseTheme
-import fr.vitesse.android.viewmodel.CandidateDetailsViewModel
-import fr.vitesse.android.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -53,11 +50,8 @@ class MainActivity : ComponentActivity() {
             startDestination = Screen.Home.route
         ) {
             composable(route = Screen.Home.route) {
-                val homeViewModel: HomeViewModel =
-                    hiltViewModel()
                 HomeScreen(
                     modifier = Modifier,
-                    candidates = homeViewModel.candidates.value,
                     onCandidateClick = {
                         id ->
                         navHostController.navigate(
@@ -76,11 +70,9 @@ class MainActivity : ComponentActivity() {
                 val sendToComposer = remember {
                     CandidateActionComposerModule(context)
                 }
-                val candidateDetailsViewModel: CandidateDetailsViewModel =
-                    hiltViewModel(backStackEntry)
                 CandidateDetailsScreen(
                     sendToComposer = sendToComposer,
-                    candidateDetailsViewModel = candidateDetailsViewModel,
+                    backStackEntry = backStackEntry,
                     onBackClick = { navHostController.navigateUp() }
                 )
             }

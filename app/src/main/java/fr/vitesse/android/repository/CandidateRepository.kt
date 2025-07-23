@@ -23,8 +23,9 @@ class CandidateRepository @Inject constructor(
 
     suspend fun getCandidateById(candidateId: Long): Candidate = dao.getCandidateById(candidateId)
 
-    suspend fun toggleCandidateFavorite(candidate: Candidate) {
-        val updated = candidate.copy(isFavorite = !candidate.isFavorite)
+    suspend fun toggleCandidateFavorite(candidateId: Long) {
+        val retrievedCandidate = dao.getCandidateById(candidateId)
+        val updated = retrievedCandidate.copy(isFavorite = !retrievedCandidate.isFavorite)
         dao.upsert(updated)
     }
 

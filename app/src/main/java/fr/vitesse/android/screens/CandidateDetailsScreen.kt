@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.AlertDialog
@@ -47,10 +48,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavBackStackEntry
 import fr.vitesse.android.R
 import fr.vitesse.android.data.Candidate
 import fr.vitesse.android.module.CandidateActionComposerModule
@@ -62,9 +63,11 @@ import fr.vitesse.android.viewmodel.CandidateDetailsViewModel
 fun CandidateDetailsScreen(
     modifier: Modifier = Modifier,
     sendToComposer: CandidateActionComposerModule,
-    candidateDetailsViewModel: CandidateDetailsViewModel = hiltViewModel(),
+    backStackEntry: NavBackStackEntry,
     onBackClick: () -> Unit,
 ) {
+    val candidateDetailsViewModel: CandidateDetailsViewModel =
+        hiltViewModel(backStackEntry)
     val collectedCandidate by candidateDetailsViewModel.candidate.collectAsStateWithLifecycle()
     val candidate = collectedCandidate
 
@@ -210,12 +213,9 @@ fun CandidateDetailsScreen(
                 },
                 actions = {
                     IconButton(onClick = {
-                        candidateDetailsViewModel.toggleCandidateFavorite()
+                        candidateDetailsViewModel.toggleCandidateFavorite(candidate.id)
                     }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Edit,
-                            contentDescription = stringResource(id = R.string.favorite)
-                        )
+                        CandidateFavoriteIcon(candidate.isFavorite)
                     }
                     IconButton(onClick = {
                         onBackClick()
@@ -243,6 +243,23 @@ fun CandidateDetailsScreen(
             candidate = candidate,
         )
     }
+}
+
+@Composable
+private fun CandidateFavoriteIcon(
+    isFavorite: Boolean,
+) {
+    if (isFavorite) {
+        return Icon(
+            imageVector = Icons.Filled.Star,
+            contentDescription = stringResource(id = R.string.favorite)
+        )
+    }
+
+    return Icon(
+        painter = painterResource(R.drawable.outlined_star_24),
+        contentDescription = stringResource(id = R.string.favorite)
+    )
 }
 
 @Composable
@@ -320,18 +337,5 @@ private fun CandidateCard (
                 )
             }
         }
-    }
-}
-
-
-@PreviewLightDark
-@Composable
-fun CandidateDetailsScreenPreview() {
-    IconButton(onClick = {
-    }) {
-        Icon(
-            painterResource(R.drawable.outline_star_24),
-            contentDescription = stringResource(id = R.string.favorite)
-        )
     }
 }

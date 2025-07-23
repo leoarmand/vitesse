@@ -24,8 +24,8 @@ class CandidateService @Inject constructor(
 
     suspend fun getCandidateById(candidateId: Long): Candidate = candidateRepository.getCandidateById(candidateId)
 
-    suspend fun toggleCandidateFavorite(candidate: Candidate) {
-        candidateRepository.toggleCandidateFavorite(candidate)
+    suspend fun toggleCandidateFavorite(candidateId: Long) {
+        candidateRepository.toggleCandidateFavorite(candidateId)
     }
 
     suspend fun deleteCandidate(candidate: Candidate) {
