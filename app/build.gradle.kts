@@ -2,8 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("com.google.devtools.ksp")
-    id("androidx.room")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
     id("com.google.dagger.hilt.android")
     kotlin("plugin.serialization")
 }
@@ -49,22 +49,16 @@ android {
 dependencies {
     implementation(libs.androidx.navigation.common.android)
     //Navigation compose deps
-    val navComposeVersion = "2.7.7"
-    implementation("androidx.navigation:navigation-compose:$navComposeVersion")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
 
     //Android Material deps
     implementation("com.google.android.material:material:1.12.0")
 
-    //Room deps
-    val roomVersion = "2.7.2"
-    implementation("androidx.room:room-runtime:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
-
     //Dagger Hilt deps
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     val daggerHiltVersion = "2.56.2"
     implementation("com.google.dagger:hilt-android:$daggerHiltVersion")
     ksp("com.google.dagger:hilt-android-compiler:$daggerHiltVersion")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     //Ktor deps
     val ktorVersion = "2.3.12"
@@ -75,6 +69,10 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
     kotlin("plugin.serialization")
+
+    //Room deps
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
