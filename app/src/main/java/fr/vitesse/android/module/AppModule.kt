@@ -2,7 +2,7 @@ package fr.vitesse.android.module
 
 import android.content.Context
 import androidx.room.Room
-import fr.vitesse.android.client.VitesseHttpClient
+import fr.vitesse.android.http.VitesseHttpClient
 import fr.vitesse.android.data.AppDatabase
 import fr.vitesse.android.repository.CandidateRepository
 import fr.vitesse.android.service.CandidateService

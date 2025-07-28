@@ -1,4 +1,4 @@
-package fr.vitesse.android.data
+package fr.vitesse.android.http
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

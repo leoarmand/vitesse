@@ -1,6 +1,5 @@
-package fr.vitesse.android.client
+package fr.vitesse.android.http
 
-import fr.vitesse.android.data.CurrencyApiResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -12,7 +11,8 @@ import org.koin.core.annotation.Single
 
 @Single
 class VitesseHttpClient {
-    val instance: HttpClient = HttpClient(CIO) {
+    private val currencyApiUrl = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json"
+    private val instance: HttpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
             json(
                 Json { ignoreUnknownKeys = true }
@@ -21,7 +21,7 @@ class VitesseHttpClient {
     }
 
     suspend fun getCurrencyApiResponse(): CurrencyApiResponse {
-        val currencyApiResponse = instance.get("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json").body<CurrencyApiResponse>()
+        val currencyApiResponse = instance.get(currencyApiUrl).body<CurrencyApiResponse>()
         return currencyApiResponse
     }
 }

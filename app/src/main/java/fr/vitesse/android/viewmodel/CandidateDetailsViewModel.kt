@@ -3,7 +3,7 @@ package fr.vitesse.android.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import fr.vitesse.android.client.VitesseHttpClient
+import fr.vitesse.android.http.VitesseHttpClient
 import fr.vitesse.android.data.Candidate
 import fr.vitesse.android.module.ActionComposerModule
 import fr.vitesse.android.service.CandidateService
