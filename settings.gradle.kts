@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "vitesse"
 include(":app")
+include(":shared")
