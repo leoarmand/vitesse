@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
-    kotlin("plugin.serialization")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -46,31 +46,25 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.navigation.common.android)
-    //Navigation compose deps
-    implementation("androidx.navigation:navigation-compose:2.7.7")
-
     //Android Material deps
-    implementation("com.google.android.material:material:1.12.0")
+    implementation(libs.material.android)
 
-    //Koin deps
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
     implementation(libs.koin.annotations)
     ksp(libs.koin.ksp)
 
-    //Ktor deps
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.android)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
 
-    kotlin("plugin.serialization")
-
-    //Room deps
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
+
+    implementation(libs.androidx.navigation.common.android)
+    implementation(libs.androidx.navigation.compose)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
