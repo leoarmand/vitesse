@@ -4,8 +4,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CurrencyResponse(
+data class CurrencyApiResponse(
     @SerialName("eur")
-    val eur: Map<String, Double>,
+    val eur: EurRates,
     val date: String
 )

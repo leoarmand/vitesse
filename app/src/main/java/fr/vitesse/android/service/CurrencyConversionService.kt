@@ -1,6 +1,6 @@
 package fr.vitesse.android.service
 
-import fr.vitesse.android.data.CurrencyResponse
+import fr.vitesse.android.data.CurrencyApiResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -13,20 +13,15 @@ import javax.inject.Inject
 class CurrencyConversionService  @Inject constructor(
     private val httpClient: HttpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
-            json(Json {
-                prettyPrint = true
-                isLenient = true
-                ignoreUnknownKeys = true
-            })
+            json(
+                Json { ignoreUnknownKeys = true }
+            )
         }
     }
 ) {
-    private val currenciesEurUrl = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json"
-    private val gbpKey = "gbp"
-
     suspend fun convertEuroToPounds(amountInEur: Double): Double {
-        val jsonElementResponse = httpClient.get(currenciesEurUrl).body<CurrencyResponse>()
-        val gbpRate = jsonElementResponse.eur[gbpKey]!!
+        val currencyApiResponse = httpClient.get("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json").body<CurrencyApiResponse>()
+        val gbpRate = currencyApiResponse.eur.gbp
 
         return amountInEur * gbpRate
     }
