@@ -1,12 +1,11 @@
 package fr.vitesse.android.viewmodel
 
 import androidx.lifecycle.ViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.vitesse.android.service.CandidateService
-import javax.inject.Inject
+import org.koin.android.annotation.KoinViewModel
 
-@HiltViewModel
-class HomeViewModel @Inject constructor(
+@KoinViewModel
+class HomeViewModel (
     candidateService: CandidateService
 ) : ViewModel() {
     val candidates =

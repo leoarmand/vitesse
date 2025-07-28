@@ -13,7 +13,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import dagger.hilt.android.AndroidEntryPoint
 import fr.vitesse.android.module.CandidateActionComposerModule
 import fr.vitesse.android.screens.CandidateDetailsScreen
 import fr.vitesse.android.screens.HomeScreen
@@ -21,11 +20,10 @@ import fr.vitesse.android.screens.Screen
 import fr.vitesse.android.service.CandidateService
 import fr.vitesse.android.ui.theme.VitesseTheme
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @Inject lateinit var candidateService: CandidateService
+    private val candidateService: CandidateService by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -3,10 +3,11 @@ package fr.vitesse.android.repository
 import fr.vitesse.android.data.Candidate
 import fr.vitesse.android.data.CandidateDao
 import kotlinx.coroutines.flow.Flow
+import org.koin.core.annotation.Single
 import java.time.LocalDate
-import javax.inject.Inject
 
-class CandidateRepository @Inject constructor(
+@Single
+class CandidateRepository(
     private val dao: CandidateDao
 ) {
     suspend fun insertDefaultCandidates() {

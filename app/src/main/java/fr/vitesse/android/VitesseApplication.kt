@@ -1,7 +1,19 @@
 package fr.vitesse.android
 
 import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
+import fr.vitesse.android.module.AppModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.GlobalContext.startKoin
 
-@HiltAndroidApp
-class VitesseApplication: Application()
+class VitesseApplication: Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        startKoin {
+            androidContext(applicationContext)
+            androidLogger()
+            modules(AppModule(applicationContext).modules)
+        }
+    }
+}

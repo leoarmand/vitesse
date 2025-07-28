@@ -41,11 +41,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fr.vitesse.android.data.Candidate
 import fr.vitesse.android.R
 import fr.vitesse.android.viewmodel.HomeViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,7 +53,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     onCandidateClick: (Long) -> Unit = {},
 ) {
-    val homeViewModel: HomeViewModel = hiltViewModel()
+    val homeViewModel: HomeViewModel = koinViewModel()
     val candidates by homeViewModel.candidates.collectAsStateWithLifecycle(emptyList())
     var isLoading by remember { mutableStateOf(false) }
     var selectedTabIndex by remember { mutableIntStateOf(0) }

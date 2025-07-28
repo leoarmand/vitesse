@@ -8,9 +8,10 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import javax.inject.Inject
+import org.koin.core.annotation.Single
 
-class CurrencyConversionService  @Inject constructor(
+@Single
+class CurrencyConversionService  (
     private val httpClient: HttpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
             json(

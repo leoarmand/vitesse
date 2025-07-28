@@ -49,7 +49,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import fr.vitesse.android.R
@@ -57,6 +56,7 @@ import fr.vitesse.android.data.Candidate
 import fr.vitesse.android.module.CandidateActionComposerModule
 import fr.vitesse.android.service.CurrencyConversionService
 import fr.vitesse.android.viewmodel.CandidateDetailsViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,7 +67,7 @@ fun CandidateDetailsScreen(
     onBackClick: () -> Unit,
 ) {
     val candidateDetailsViewModel: CandidateDetailsViewModel =
-        hiltViewModel(backStackEntry)
+        koinViewModel(viewModelStoreOwner = backStackEntry)
     val collectedCandidate by candidateDetailsViewModel.candidate.collectAsStateWithLifecycle()
     val candidate = collectedCandidate
 

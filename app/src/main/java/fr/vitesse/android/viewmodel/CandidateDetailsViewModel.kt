@@ -3,16 +3,15 @@ package fr.vitesse.android.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.vitesse.android.data.Candidate
 import fr.vitesse.android.service.CandidateService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import org.koin.android.annotation.KoinViewModel
 
-@HiltViewModel
-class CandidateDetailsViewModel @Inject constructor(
+@KoinViewModel
+class CandidateDetailsViewModel (
     private val candidateService: CandidateService,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {

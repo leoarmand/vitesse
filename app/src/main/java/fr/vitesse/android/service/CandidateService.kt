@@ -3,21 +3,12 @@ package fr.vitesse.android.service
 import fr.vitesse.android.data.Candidate
 import fr.vitesse.android.repository.CandidateRepository
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
+import org.koin.core.annotation.Factory
 
-class CandidateService @Inject constructor(
-    private val candidateRepository: CandidateRepository
-) {
+@Factory
+class CandidateService(private val candidateRepository: CandidateRepository) {
     suspend fun initIfNeeded() {
-        //val candidatesFlow = candidateRepository.getAll()
         candidateRepository.insertDefaultCandidates()
-        /*candidatesFlow.collect {
-            candidates ->
-                {
-                    if (candidates.isEmpty()) {
-                    }
-                }
-        }*/
     }
 
     fun getAll(): Flow<List<Candidate>> = candidateRepository.getAll()

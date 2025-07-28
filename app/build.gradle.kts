@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
-    id("com.google.dagger.hilt.android")
     kotlin("plugin.serialization")
 }
 
@@ -55,14 +54,10 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0")
 
     //Koin deps
-    implementation(libs.koin.androidx.compose)
     implementation(libs.koin.android)
-
-    //Dagger Hilt deps
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    val daggerHiltVersion = "2.56.2"
-    implementation("com.google.dagger:hilt-android:$daggerHiltVersion")
-    ksp("com.google.dagger:hilt-android-compiler:$daggerHiltVersion")
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.annotations)
+    ksp(libs.koin.ksp)
 
     //Ktor deps
     val ktorVersion = "2.3.12"
