@@ -5,15 +5,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import fr.vitesse.android.module.CandidateActionComposerModule
 import fr.vitesse.android.screens.CandidateDetailsScreen
 import fr.vitesse.android.screens.HomeScreen
 import fr.vitesse.android.screens.Screen
@@ -64,12 +61,7 @@ class MainActivity : ComponentActivity() {
                 route = Screen.CandidateDetails.route,
                 arguments = Screen.CandidateDetails.navArguments
             ) { backStackEntry ->
-                val context = LocalContext.current
-                val sendToComposer = remember {
-                    CandidateActionComposerModule(context)
-                }
                 CandidateDetailsScreen(
-                    sendToComposer = sendToComposer,
                     backStackEntry = backStackEntry,
                     onBackClick = { navHostController.navigateUp() }
                 )

@@ -3,9 +3,9 @@ package fr.vitesse.android.service
 import fr.vitesse.android.data.Candidate
 import fr.vitesse.android.repository.CandidateRepository
 import kotlinx.coroutines.flow.Flow
-import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Single
 
-@Factory
+@Single
 class CandidateService(private val candidateRepository: CandidateRepository) {
     suspend fun initIfNeeded() {
         candidateRepository.insertDefaultCandidates()

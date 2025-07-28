@@ -1,4 +1,4 @@
-package fr.vitesse.android.service
+package fr.vitesse.android.client
 
 import fr.vitesse.android.data.CurrencyApiResponse
 import io.ktor.client.HttpClient
@@ -11,19 +11,17 @@ import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Single
 
 @Single
-class CurrencyConversionService  (
-    private val httpClient: HttpClient = HttpClient(CIO) {
+class VitesseHttpClient {
+    val instance: HttpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
             json(
                 Json { ignoreUnknownKeys = true }
             )
         }
     }
-) {
-    suspend fun convertEuroToPounds(amountInEur: Double): Double {
-        val currencyApiResponse = httpClient.get("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json").body<CurrencyApiResponse>()
-        val gbpRate = currencyApiResponse.eur.gbp
 
-        return amountInEur * gbpRate
+    suspend fun getCurrencyApiResponse(): CurrencyApiResponse {
+        val currencyApiResponse = instance.get("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json").body<CurrencyApiResponse>()
+        return currencyApiResponse
     }
 }

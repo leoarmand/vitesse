@@ -3,7 +3,9 @@ package fr.vitesse.android.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import fr.vitesse.android.client.VitesseHttpClient
 import fr.vitesse.android.data.Candidate
+import fr.vitesse.android.module.ActionComposerModule
 import fr.vitesse.android.service.CandidateService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,6 +15,8 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class CandidateDetailsViewModel (
     private val candidateService: CandidateService,
+    private val vitesseHttpClient: VitesseHttpClient,
+    private val candidateActionComposerModule: ActionComposerModule,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _candidate = MutableStateFlow<Candidate?>(null)
@@ -45,5 +49,21 @@ class CandidateDetailsViewModel (
                 candidateService.deleteCandidate(_candidate.value!!)
             }
         }
+    }
+
+    suspend fun convertEuroToPounds(amountInEur: Double): Double {
+        return amountInEur * vitesseHttpClient.getCurrencyApiResponse().eur.gbp
+    }
+
+    fun callCandidate() {
+        candidateActionComposerModule.call(_candidate.value!!.phoneNumber)
+    }
+
+    fun sendSmsToCandidate() {
+        candidateActionComposerModule.sendSms(_candidate.value!!.phoneNumber)
+    }
+
+    fun sendEmailToCandidate() {
+        candidateActionComposerModule.sendEmail(_candidate.value!!.email)
     }
 }

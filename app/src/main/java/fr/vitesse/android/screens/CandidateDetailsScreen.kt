@@ -53,8 +53,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import fr.vitesse.android.R
 import fr.vitesse.android.data.Candidate
-import fr.vitesse.android.module.CandidateActionComposerModule
-import fr.vitesse.android.service.CurrencyConversionService
 import fr.vitesse.android.viewmodel.CandidateDetailsViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -62,7 +60,6 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CandidateDetailsScreen(
     modifier: Modifier = Modifier,
-    sendToComposer: CandidateActionComposerModule,
     backStackEntry: NavBackStackEntry,
     onBackClick: () -> Unit,
 ) {
@@ -82,7 +79,6 @@ fun CandidateDetailsScreen(
     )
     {
         val scrollState = rememberScrollState()
-        val currencyConversionService = CurrencyConversionService()
         val eurSalary = candidate.salary.toString() + " €"
 
         val defaultPoundSalary = (candidate.salary * 0.86).toString() + " £"
@@ -90,7 +86,7 @@ fun CandidateDetailsScreen(
 
         LaunchedEffect(candidate.salary) {
             poundSalary = String.format(
-                "%.2f £", currencyConversionService.convertEuroToPounds(candidate.salary)
+                "%.2f £", candidateDetailsViewModel.convertEuroToPounds(candidate.salary)
             )
         }
 
@@ -118,21 +114,21 @@ fun CandidateDetailsScreen(
                     drawableRes = R.drawable.call_24px,
                     text = stringResource(id = R.string.call),
                     onClick = {
-                        sendToComposer.call(candidate.phoneNumber)
+                        candidateDetailsViewModel.callCandidate()
                     }
                 )
                 CandidateAction(
                     drawableRes = R.drawable.chat_24px,
                     text = stringResource(id = R.string.sms),
                     onClick = {
-                        sendToComposer.sendSms(candidate.phoneNumber)
+                        candidateDetailsViewModel.sendSmsToCandidate()
                     }
                 )
                 CandidateAction(
                     drawableRes = R.drawable.mail_24px,
                     text = stringResource(id = R.string.email),
                     onClick = {
-                        sendToComposer.sendEmail(candidate.email)
+                        candidateDetailsViewModel.sendEmailToCandidate()
                     }
                 )
             }
