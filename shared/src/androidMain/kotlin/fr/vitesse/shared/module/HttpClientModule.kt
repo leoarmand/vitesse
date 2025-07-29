@@ -1,4 +1,4 @@
-package fr.vitesse.android.module
+package fr.vitesse.shared.module
 
 import fr.vitesse.shared.model.CurrencyApiResponse
 import io.ktor.client.HttpClient

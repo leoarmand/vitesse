@@ -7,7 +7,7 @@ import fr.vitesse.android.module.candidateDetailsViewModelModule
 import fr.vitesse.android.module.candidateRepositoryModule
 import fr.vitesse.android.module.candidateServiceModule
 import fr.vitesse.android.module.homeViewModelModule
-import fr.vitesse.android.module.httpClientModule
+import fr.vitesse.shared.module.httpClientModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import fr.vitesse.android.data.Candidate
 import fr.vitesse.android.module.ActionComposerModule
-import fr.vitesse.android.module.HttpClientModule
+import fr.vitesse.shared.module.HttpClientModule
 import fr.vitesse.android.service.CandidateService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.room)
 }
 
@@ -63,6 +64,12 @@ kotlin {
                 implementation(libs.kotlin.stdlib)
 
                 implementation(libs.koin.annotations)
+
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.android)
+                implementation(libs.ktor.client.cio)
+                implementation(libs.ktor.client.content.negotiation)
+                implementation(libs.ktor.serialization.kotlinx.json)
 
                 implementation(libs.androidx.room.runtime)
             }
