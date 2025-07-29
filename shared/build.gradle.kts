@@ -61,9 +61,11 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                // Add KMP dependencies here
 
-                //Room deps
+                implementation(libs.koin.android)
+                implementation(libs.koin.androidx.compose)
+                implementation(libs.koin.annotations)
+
                 implementation(libs.androidx.room.runtime)
             }
         }
@@ -76,9 +78,8 @@ kotlin {
 
         androidMain {
             dependencies {
-                // Add Android-specific dependencies here. Note that this source set depends on
-                // commonMain by default and will correctly pull the Android artifacts of any KMP
-                // dependencies declared in commonMain.
+                implementation(libs.koin.android)
+                implementation(libs.koin.androidx.compose)
             }
         }
 

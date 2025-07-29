@@ -14,9 +14,9 @@ abstract class AppDatabase : RoomDatabase() {
 
 class Converters {
     @TypeConverter
-    fun fromLocalDate(date: LocalDate?): String? = date?.toString()
+    fun fromLocalDate(date: LocalDate): String = date.toString()
 
     @TypeConverter
     //LocalDate.parse requires API 26
-    fun toLocalDate(dateString: String?): LocalDate? = dateString?.let { LocalDate.parse(it) }
+    fun toLocalDate(dateString: String): LocalDate = LocalDate.parse(dateString)
 }

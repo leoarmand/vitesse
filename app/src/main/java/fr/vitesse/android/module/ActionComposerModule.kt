@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.net.toUri
 import org.koin.core.annotation.Single
+import org.koin.dsl.module
 
 @Single
 class ActionComposerModule (private val context: Context) {
@@ -35,5 +36,9 @@ class ActionComposerModule (private val context: Context) {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
         context.startActivity(intent)
+    }
+
+    val module = module {
+        single { ActionComposerModule(context) }
     }
 }
