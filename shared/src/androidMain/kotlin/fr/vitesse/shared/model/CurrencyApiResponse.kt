@@ -1,4 +1,4 @@
-package fr.vitesse.android.model
+package fr.vitesse.shared.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

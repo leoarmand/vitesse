@@ -62,8 +62,6 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
 
-                implementation(libs.koin.android)
-                implementation(libs.koin.androidx.compose)
                 implementation(libs.koin.annotations)
 
                 implementation(libs.androidx.room.runtime)
