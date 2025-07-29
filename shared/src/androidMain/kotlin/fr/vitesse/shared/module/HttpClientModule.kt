@@ -12,9 +12,10 @@ import org.koin.core.annotation.Single
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
+private const val CURRENCY_API_URL = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json"
+
 @Single
 class HttpClientModule {
-    private val currencyApiUrl = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json"
     private val instance: HttpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
             json(
@@ -24,7 +25,7 @@ class HttpClientModule {
     }
 
     suspend fun getCurrencyApiResponse(): CurrencyApiResponse {
-        val currencyApiResponse = instance.get(currencyApiUrl).body<CurrencyApiResponse>()
+        val currencyApiResponse = instance.get(CURRENCY_API_URL).body<CurrencyApiResponse>()
         return currencyApiResponse
     }
 }
