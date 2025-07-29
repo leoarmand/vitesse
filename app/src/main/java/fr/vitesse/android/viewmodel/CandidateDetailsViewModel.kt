@@ -3,9 +3,9 @@ package fr.vitesse.android.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import fr.vitesse.android.http.VitesseHttpClient
 import fr.vitesse.android.data.Candidate
 import fr.vitesse.android.module.ActionComposerModule
+import fr.vitesse.android.module.HttpClientModule
 import fr.vitesse.android.service.CandidateService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +15,7 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class CandidateDetailsViewModel (
     private val candidateService: CandidateService,
-    private val vitesseHttpClient: VitesseHttpClient,
+    private val httpClientModule: HttpClientModule,
     private val candidateActionComposerModule: ActionComposerModule,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -52,7 +52,7 @@ class CandidateDetailsViewModel (
     }
 
     suspend fun convertEuroToPounds(amountInEur: Double): Double {
-        return amountInEur * vitesseHttpClient.getCurrencyApiResponse().eur.gbp
+        return amountInEur * httpClientModule.getCurrencyApiResponse().eur.gbp
     }
 
     fun callCandidate() {
