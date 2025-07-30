@@ -10,17 +10,12 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CandidateDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(candidates: List<Candidate>)
 
     @Query("SELECT * FROM candidates")
     fun getAll(): Flow<List<Candidate>>
 
     @Query("SELECT * FROM candidates WHERE id = :candidateId")
     suspend fun getCandidateById(candidateId: Long): Candidate
-
-    @Insert
-    suspend fun insert(candidate: Candidate)
 
     @Upsert
     suspend fun upsert(candidate: Candidate)

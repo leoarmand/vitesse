@@ -7,10 +7,6 @@ import org.koin.core.annotation.Single
 
 @Single
 class CandidateService(private val candidateRepository: CandidateRepository) {
-    suspend fun initIfNeeded() {
-        candidateRepository.insertDefaultCandidates()
-    }
-
     fun getAll(): Flow<List<Candidate>> = candidateRepository.getAll()
 
     suspend fun getCandidateById(candidateId: Long): Candidate = candidateRepository.getCandidateById(candidateId)

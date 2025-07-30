@@ -14,20 +14,14 @@ import androidx.navigation.compose.rememberNavController
 import fr.vitesse.android.screens.CandidateDetailsScreen
 import fr.vitesse.android.screens.HomeScreen
 import fr.vitesse.android.screens.Screen
-import fr.vitesse.android.service.CandidateService
 import fr.vitesse.android.ui.theme.VitesseTheme
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
-    private val candidateService: CandidateService by inject()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-            candidateService.initIfNeeded()
-
             enableEdgeToEdge()
             setContent {
                 val navController = rememberNavController()
