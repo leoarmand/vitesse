@@ -13,6 +13,10 @@ class CandidateRepository(
 
     suspend fun getCandidateById(candidateId: Long): Candidate = dao.getCandidateById(candidateId)
 
+    suspend fun upsertCandidate(candidate: Candidate) {
+        dao.upsert(candidate)
+    }
+
     suspend fun toggleCandidateFavorite(candidateId: Long) {
         val retrievedCandidate = dao.getCandidateById(candidateId)
         val updated = retrievedCandidate.copy(isFavorite = !retrievedCandidate.isFavorite)

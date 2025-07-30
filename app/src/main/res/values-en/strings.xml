@@ -26,4 +26,11 @@
     <string name="are_you_sure_you_want_to_delete_candidate">Are you sure you want to delete this candidate? This action cannot be undone</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string name="add">Add</string>
+    <string name="save">Save</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="add_candidate">Add a candidate</string>
+    <string name="candidate">Candidate</string>
+    <string name="phone">Phone</string>
 </resources>

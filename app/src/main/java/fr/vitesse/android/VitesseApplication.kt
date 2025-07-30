@@ -6,6 +6,7 @@ import fr.vitesse.android.module.DatabaseModule
 import fr.vitesse.android.module.candidateDetailsViewModelModule
 import fr.vitesse.android.module.candidateRepositoryModule
 import fr.vitesse.android.module.candidateServiceModule
+import fr.vitesse.android.module.createCandidateViewModelModule
 import fr.vitesse.android.module.homeViewModelModule
 import fr.vitesse.shared.module.httpClientModule
 import org.koin.android.ext.koin.androidContext
@@ -26,6 +27,7 @@ class VitesseApplication: Application() {
                 candidateRepositoryModule,
                 candidateServiceModule,
                 candidateDetailsViewModelModule,
+                createCandidateViewModelModule,
                 homeViewModelModule
             )
         }

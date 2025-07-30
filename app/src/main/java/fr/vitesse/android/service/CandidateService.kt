@@ -11,6 +11,10 @@ class CandidateService(private val candidateRepository: CandidateRepository) {
 
     suspend fun getCandidateById(candidateId: Long): Candidate = candidateRepository.getCandidateById(candidateId)
 
+    suspend fun upsertCandidate(candidate: Candidate) {
+        candidateRepository.upsertCandidate(candidate)
+    }
+
     suspend fun toggleCandidateFavorite(candidateId: Long) {
         candidateRepository.toggleCandidateFavorite(candidateId)
     }

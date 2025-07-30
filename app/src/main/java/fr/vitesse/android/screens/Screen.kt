@@ -18,4 +18,15 @@ sealed class Screen(
     ) {
         fun createRoute(candidateId: Long) = "candidateDetails/$candidateId"
     }
+
+    data object EditCandidate : Screen(
+        route = "editCandidate/{candidateId}",
+        navArguments = listOf(navArgument("candidateId") {
+            type = NavType.LongType
+        })
+    ) {
+        fun createRoute(candidateId: Long?) = "createOrEditAnimal/$candidateId"
+    }
+
+    data object CreateCandidate : Screen("createCandidate")
 }

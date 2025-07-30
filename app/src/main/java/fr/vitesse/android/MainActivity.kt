@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import fr.vitesse.android.screens.CandidateDetailsScreen
+import fr.vitesse.android.screens.CreateCandidateScreen
 import fr.vitesse.android.screens.HomeScreen
 import fr.vitesse.android.screens.Screen
 import fr.vitesse.android.ui.theme.VitesseTheme
@@ -48,7 +49,8 @@ class MainActivity : ComponentActivity() {
                                 candidateId = id
                             )
                         )
-                    }
+                    },
+                    onAddCandidateClick = { navHostController.navigate(Screen.CreateCandidate.route) },
                 )
             }
             composable(
@@ -58,6 +60,24 @@ class MainActivity : ComponentActivity() {
                 CandidateDetailsScreen(
                     backStackEntry = backStackEntry,
                     onBackClick = { navHostController.navigateUp() }
+                )
+            }
+            composable(route = Screen.CreateCandidate.route
+            ) { backStackEntry ->
+                CreateCandidateScreen(
+                    backStackEntry = backStackEntry,
+                    onBackClick = { navHostController.navigateUp() },
+                    onSaveClick = { navHostController.navigateUp() }
+                )
+            }
+            composable(
+                route = Screen.EditCandidate.route,
+                arguments = Screen.CandidateDetails.navArguments
+            ) { backStackEntry ->
+                CreateCandidateScreen (
+                    backStackEntry = backStackEntry,
+                    onBackClick = { navHostController.navigateUp() },
+                    onSaveClick = {  }
                 )
             }
         }
