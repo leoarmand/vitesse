@@ -63,6 +63,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
 
+                implementation(libs.koin.android)
                 implementation(libs.koin.annotations)
 
                 implementation(libs.ktor.client.core)
@@ -83,8 +84,6 @@ kotlin {
 
         androidMain {
             dependencies {
-                implementation(libs.koin.android)
-                implementation(libs.koin.androidx.compose)
             }
         }
 

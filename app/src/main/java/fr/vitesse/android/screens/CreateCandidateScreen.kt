@@ -171,7 +171,7 @@ private fun CreateCandidate(
         Row {
             Icon(
                 modifier = Modifier
-                    .padding(end = 16.dp)
+                    .padding(top = 8.dp, end = 16.dp)
                     .align(Alignment.CenterVertically),
                 imageVector = Icons.Outlined.Person,
                 contentDescription = stringResource(id = R.string.candidate)
@@ -207,7 +207,7 @@ private fun CreateCandidate(
         ) {
             Icon(
                 modifier = Modifier
-                    .padding(end = 16.dp)
+                    .padding(top = 8.dp, end = 16.dp)
                     .align(Alignment.CenterVertically),
                 imageVector = Icons.Outlined.Phone,
                 contentDescription = stringResource(id = R.string.phone)
