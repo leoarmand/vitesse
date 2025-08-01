@@ -9,6 +9,7 @@ import fr.vitesse.shared.module.HttpClientModule
 import fr.vitesse.android.service.CandidateService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
@@ -20,26 +21,22 @@ class CandidateDetailsViewModel (
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _candidate = MutableStateFlow<Candidate?>(null)
-    val candidate: StateFlow<Candidate?> = _candidate
+    val candidate: StateFlow<Candidate?> = _candidate.asStateFlow()
 
     init {
         val candidateId: Long? = savedStateHandle["candidateId"]
         if (candidateId != null) {
             viewModelScope.launch {
-                _candidate.value = candidateService.getCandidateById(candidateId)
+                candidateService.getCandidateFlowById(candidateId).collect { updatedCandidate ->
+                    _candidate.value = updatedCandidate
+                }
             }
         }
     }
 
-    fun toggleCandidateFavorite(
-        candidateId: Long
-    ) {
+    fun toggleCandidateFavorite(candidateId: Long) {
         viewModelScope.launch {
-            _candidate.value?.let {
-                candidateService.toggleCandidateFavorite(candidateId)
-                val updated = candidateService.getCandidateById(candidateId)
-                _candidate.value = updated
-            }
+            candidateService.toggleCandidateFavorite(candidateId)
         }
     }
 

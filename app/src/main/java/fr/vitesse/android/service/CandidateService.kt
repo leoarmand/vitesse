@@ -9,11 +9,9 @@ import org.koin.core.annotation.Single
 class CandidateService(private val candidateRepository: CandidateRepository) {
     fun getAll(): Flow<List<Candidate>> = candidateRepository.getAll()
 
-    suspend fun getCandidateById(candidateId: Long): Candidate = candidateRepository.getCandidateById(candidateId)
+    fun getCandidateFlowById(candidateId: Long) = candidateRepository.getCandidateFlowById(candidateId)
 
-    suspend fun upsertCandidate(candidate: Candidate) {
-        candidateRepository.upsertCandidate(candidate)
-    }
+    suspend fun getCandidateById(candidateId: Long) = candidateRepository.getCandidateById(candidateId)
 
     suspend fun toggleCandidateFavorite(candidateId: Long) {
         candidateRepository.toggleCandidateFavorite(candidateId)
