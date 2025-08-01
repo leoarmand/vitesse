@@ -50,7 +50,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavBackStackEntry
 import fr.vitesse.android.R
 import fr.vitesse.android.data.Candidate
 import fr.vitesse.android.viewmodel.CandidateDetailsViewModel
@@ -60,11 +59,10 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CandidateDetailsScreen(
     modifier: Modifier = Modifier,
-    backStackEntry: NavBackStackEntry,
-    onBackClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     val candidateDetailsViewModel: CandidateDetailsViewModel =
-        koinViewModel(viewModelStoreOwner = backStackEntry)
+        koinViewModel()
     val collectedCandidate by candidateDetailsViewModel.candidate.collectAsStateWithLifecycle()
     val candidate = collectedCandidate
 

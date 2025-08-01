@@ -9,8 +9,6 @@ import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Single
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.module
 
 private const val CURRENCY_API_URL = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json"
 
@@ -28,8 +26,4 @@ class HttpClientModule {
         val currencyApiResponse = instance.get(CURRENCY_API_URL).body<CurrencyApiResponse>()
         return currencyApiResponse
     }
-}
-
-val httpClientModule = module {
-    singleOf(::HttpClientModule)
 }

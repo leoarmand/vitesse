@@ -58,14 +58,12 @@ class MainActivity : ComponentActivity() {
                 arguments = Screen.CandidateDetails.navArguments
             ) { backStackEntry ->
                 CandidateDetailsScreen(
-                    backStackEntry = backStackEntry,
                     onBackClick = { navHostController.navigateUp() }
                 )
             }
             composable(route = Screen.CreateCandidate.route
-            ) { backStackEntry ->
+            ) {
                 CreateCandidateScreen(
-                    backStackEntry = backStackEntry,
                     onBackClick = { navHostController.navigateUp() },
                     onSaveClick = { navHostController.navigateUp() }
                 )
@@ -73,9 +71,8 @@ class MainActivity : ComponentActivity() {
             composable(
                 route = Screen.EditCandidate.route,
                 arguments = Screen.CandidateDetails.navArguments
-            ) { backStackEntry ->
+            ) {
                 CreateCandidateScreen (
-                    backStackEntry = backStackEntry,
                     onBackClick = { navHostController.navigateUp() },
                     onSaveClick = {  }
                 )

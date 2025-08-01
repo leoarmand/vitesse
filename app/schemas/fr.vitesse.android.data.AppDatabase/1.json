@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e4d43385344c9d20f24a7ddf41e536b7",
+    "identityHash": "f0f929f6ed45930d5f44df3695637e8e",
     "entities": [
       {
         "tableName": "candidates",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `email` TEXT NOT NULL, `phoneNumber` TEXT NOT NULL, `firstName` TEXT NOT NULL, `lastName` TEXT NOT NULL, `birthday` TEXT NOT NULL, `salary` REAL NOT NULL, `note` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL, `avatarPath` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `email` TEXT NOT NULL, `phone_number` TEXT NOT NULL, `first_name` TEXT NOT NULL, `last_name` TEXT NOT NULL, `birthday` TEXT NOT NULL, `salary` REAL NOT NULL, `note` TEXT NOT NULL, `is_favorite` INTEGER NOT NULL, `avatar_path` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -22,19 +22,19 @@
           },
           {
             "fieldPath": "phoneNumber",
-            "columnName": "phoneNumber",
+            "columnName": "phone_number",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "firstName",
-            "columnName": "firstName",
+            "columnName": "first_name",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "lastName",
-            "columnName": "lastName",
+            "columnName": "last_name",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -58,13 +58,13 @@
           },
           {
             "fieldPath": "isFavorite",
-            "columnName": "isFavorite",
+            "columnName": "is_favorite",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "avatarPath",
-            "columnName": "avatarPath",
+            "columnName": "avatar_path",
             "affinity": "TEXT"
           }
         ],
@@ -78,7 +78,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e4d43385344c9d20f24a7ddf41e536b7')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f0f929f6ed45930d5f44df3695637e8e')"
     ]
   }
 }

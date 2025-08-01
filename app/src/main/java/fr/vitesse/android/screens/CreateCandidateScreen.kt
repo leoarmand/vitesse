@@ -38,7 +38,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavBackStackEntry
 import fr.vitesse.android.R
 import fr.vitesse.android.data.Candidate
 import fr.vitesse.android.viewmodel.CreateCandidateViewModel
@@ -49,13 +48,12 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CreateCandidateScreen(
     modifier: Modifier = Modifier,
-    backStackEntry: NavBackStackEntry,
     onBackClick: () -> Unit,
     onSaveClick: () -> Unit
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
     val createCandidateViewModel: CreateCandidateViewModel =
-        koinViewModel(viewModelStoreOwner = backStackEntry)
+        koinViewModel()
+    val snackbarHostState = remember { SnackbarHostState() }
     val collectedCandidate by createCandidateViewModel.candidate.collectAsStateWithLifecycle()
     val candidate = collectedCandidate
 
@@ -135,8 +133,6 @@ fun verifyAndCreateCandidate(
     context: Context
 ): Boolean
 {
-
-    val animalAge: Int;
 
     /*CandidateService.upsertCandidate(
         Candidate(

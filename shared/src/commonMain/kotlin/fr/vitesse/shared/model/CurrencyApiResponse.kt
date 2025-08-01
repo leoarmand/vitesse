@@ -6,6 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CurrencyApiResponse(
     @SerialName("eur")
-    val eur: EurRates,
-    val date: String
+    val eur: EurRates
 )
