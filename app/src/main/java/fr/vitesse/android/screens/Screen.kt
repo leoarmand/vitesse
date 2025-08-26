@@ -13,19 +13,19 @@ sealed class Screen(
     data object CandidateDetails : Screen(
         route = "candidateDetails/{candidateId}",
         navArguments = listOf(navArgument("candidateId") {
-            type = NavType.LongType
+            type = NavType.IntType
         })
     ) {
-        fun createRoute(candidateId: Long) = "candidateDetails/$candidateId"
+        fun createRoute(candidateId: Int) = "candidateDetails/$candidateId"
     }
 
     data object EditCandidate : Screen(
         route = "editCandidate/{candidateId}",
         navArguments = listOf(navArgument("candidateId") {
-            type = NavType.LongType
+            type = NavType.IntType
         })
     ) {
-        fun createRoute(candidateId: Long?) = "createOrEditAnimal/$candidateId"
+        fun createRoute(candidateId: Int?) = "editCandidate/$candidateId"
     }
 
     data object CreateCandidate : Screen("createCandidate")

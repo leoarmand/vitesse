@@ -11,15 +11,15 @@ class CandidateRepository(
 ) {
     fun getAll(): Flow<List<Candidate>> = dao.getAll()
 
-    fun getCandidateFlowById(candidateId: Long) = dao.getCandidateFlowById(candidateId)
-
-    suspend fun getCandidateById(candidateId: Long) = dao.getCandidateById(candidateId)
+    fun getCandidateFlowById(candidateId: Int) = dao.getCandidateFlowById(candidateId)
 
     suspend fun upsertCandidate(candidate: Candidate) {
         dao.upsert(candidate)
     }
 
-    suspend fun toggleCandidateFavorite(candidateId: Long) {
+    suspend fun getCandidateById(candidateId: Int) = dao.getCandidateById(candidateId)
+
+    suspend fun toggleCandidateFavorite(candidateId: Int) {
         // ✅ utilise la version suspendue pour récupérer la valeur actuelle
         val retrievedCandidate = dao.getCandidateById(candidateId)
         val updated = retrievedCandidate.copy(isFavorite = !retrievedCandidate.isFavorite)

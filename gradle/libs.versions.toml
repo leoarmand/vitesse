@@ -19,6 +19,7 @@ kotlinStdlib = "2.2.0"
 kotlinTest = "2.2.0"
 runner = "1.6.2"
 core = "1.6.1"
+coil = "3.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -40,6 +41,8 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 androidx-navigation-common-android = { group = "androidx.navigation", name = "navigation-common-android", version.ref = "navigationCommonAndroid" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCommonAndroid" }
 androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 koin-android = { group = "io.insert-koin", name="koin-android", version.ref = "koin" }
 koin-androidx-compose = { group = "io.insert-koin", name="koin-androidx-compose", version.ref = "koin" }
 koin-annotations = { group = "io.insert-koin", name="koin-annotations", version.ref = "koin-annotations" }

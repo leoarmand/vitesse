@@ -1,5 +1,6 @@
 package fr.vitesse.android.screens
 
+import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -50,15 +51,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.toUri
 import fr.vitesse.android.R
+import fr.vitesse.android.components.AvatarComponent
 import fr.vitesse.android.data.Candidate
 import fr.vitesse.android.viewmodel.CandidateDetailsViewModel
 import org.koin.androidx.compose.koinViewModel
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CandidateDetailsScreen(
     modifier: Modifier = Modifier,
+    onEditCandidateClick: (Int) -> Unit,
     onBackClick: () -> Unit
 ) {
     val candidateDetailsViewModel: CandidateDetailsViewModel =
@@ -94,14 +99,7 @@ fun CandidateDetailsScreen(
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(modifier = Modifier.aspectRatio(3f / 2f)) {
-                Image(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentScale = ContentScale.Crop,
-                    painter = painterResource(R.drawable.default_avatar),
-                    contentDescription = stringResource(id = R.string.default_avatar)
-                )
-            }
+            AvatarComponent(avatarUri = Uri.fromFile(File(candidate.avatarPath)))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -212,7 +210,7 @@ fun CandidateDetailsScreen(
                         CandidateFavoriteIcon(candidate.isFavorite)
                     }
                     IconButton(onClick = {
-                        onBackClick()
+                        onEditCandidateClick(candidate.id)
                     }) {
                         Icon(
                             imageVector = Icons.Outlined.Edit,

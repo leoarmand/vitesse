@@ -24,7 +24,7 @@ class CandidateDetailsViewModel (
     val candidate: StateFlow<Candidate?> = _candidate.asStateFlow()
 
     init {
-        val candidateId: Long? = savedStateHandle["candidateId"]
+        val candidateId: Int? = savedStateHandle["candidateId"]
         if (candidateId != null) {
             viewModelScope.launch {
                 candidateService.getCandidateFlowById(candidateId).collect { updatedCandidate ->
@@ -34,7 +34,7 @@ class CandidateDetailsViewModel (
         }
     }
 
-    fun toggleCandidateFavorite(candidateId: Long) {
+    fun toggleCandidateFavorite(candidateId: Int) {
         viewModelScope.launch {
             candidateService.toggleCandidateFavorite(candidateId)
         }

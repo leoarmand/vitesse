@@ -1,6 +1,11 @@
 package fr.vitesse.android.screens
 
-import android.content.Context
+import android.net.Uri
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,35 +19,55 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Phone
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fr.vitesse.android.R
+import fr.vitesse.android.components.AvatarComponent
 import fr.vitesse.android.data.Candidate
 import fr.vitesse.android.viewmodel.CreateCandidateViewModel
-import kotlinx.coroutines.CoroutineScope
 import org.koin.androidx.compose.koinViewModel
+import androidx.core.net.toUri
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import kotlin.toString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,13 +82,24 @@ fun CreateCandidateScreen(
     val collectedCandidate by createCandidateViewModel.candidate.collectAsStateWithLifecycle()
     val candidate = collectedCandidate
 
+    val avatarUri = rememberSaveable { mutableStateOf<Uri?>(null) }
     val firstName = rememberSaveable { mutableStateOf("") }
     val lastName = rememberSaveable { mutableStateOf("") }
     val phoneNumber = rememberSaveable { mutableStateOf("") }
+    val email = rememberSaveable { mutableStateOf("") }
+    val birthDay = rememberSaveable { mutableLongStateOf(-1) }
+    val salary = rememberSaveable { mutableStateOf("") }
+    val note = rememberSaveable { mutableStateOf("") }
 
     candidate?.let {
+        avatarUri.value = it.avatarPath?.toUri()
         firstName.value = it.firstName
         lastName.value = it.lastName
+        phoneNumber.value = it.phoneNumber
+        email.value = it.email
+        birthDay.longValue = it.birthday
+        salary.value = it.salary.toString()
+        note.value = it.note
     }
 
     Scaffold(
@@ -98,9 +134,18 @@ fun CreateCandidateScreen(
                 onClick = {
                     //val regex = Regex("^[+]?[0-9]{6,15}$")
                     //if (!regex.matches(phoneNumber.value)) {
-                    //if (verifyAndCreateCandidate(firstName.value, snackbarHostState, scope, context)) {
-                        onSaveClick()
-                    //}
+                    verifyAndCreateCandidate(
+                        createCandidateViewModel,candidate,
+                        avatarUri.value,
+                        firstName.value,
+                        lastName.value,
+                        phoneNumber.value,
+                        email.value,
+                        birthDay.longValue,
+                        salary.value,
+                        note.value
+                    )
+                    onSaveClick()
                 }
             ) {
                 Text(
@@ -111,36 +156,52 @@ fun CreateCandidateScreen(
     ) { contentPadding ->
         CreateCandidate(
             modifier = Modifier.padding(contentPadding),
+            avatarUri = avatarUri.value,
             firstName = firstName.value,
-            onFirstNameChanged = { firstName.value = it },
             lastName = lastName.value,
+            email = email.value,
+            birthDay = birthDay.longValue,
+            salary = salary.value,
+            note = note.value,
+            onAvatarUriChanged = { avatarUri.value = it },
+            onFirstNameChanged = { firstName.value = it },
             onLastNameChanged = { lastName.value = it },
             phoneNumber = phoneNumber.value,
-            onPhoneChanged = { phoneNumber.value = it }
+            onPhoneChanged = { phoneNumber.value = it },
+            onBirthDayChanged = { birthDay.longValue = it },
+            onEmailChanged = { email.value = it },
+            onSalaryChanged = { salary.value = it },
+            onNoteChanged = { note.value = it }
         )
     }
 }
 
 fun verifyAndCreateCandidate(
+    createCandidateViewModel: CreateCandidateViewModel,
     candidate: Candidate?,
+    avatarUri: Uri?,
     firstName: String,
     lastName: String,
-    age: String,
-    weight: String,
-    height: String,
-    snackbarHostState: SnackbarHostState,
-    scope: CoroutineScope,
-    context: Context
+    phoneNumber: String,
+    email: String,
+    birthday: Long,
+    salary: String,
+    note: String
 ): Boolean
 {
+    val candidateToUpsert = Candidate(
+        id = candidate?.id ?: 0,
+        email = email,
+        phoneNumber = phoneNumber,
+        firstName = firstName,
+        lastName = lastName,
+        birthday = birthday,
+        salary = salary.toDouble(),
+        note = note,
+        avatarPath = avatarUri.toString()
+    )
 
-    /*CandidateService.upsertCandidate(
-        Candidate(
-            candidate?.id ?: UUID.randomUUID(),
-            firstName,
-            lastName
-        )
-    )*/
+    createCandidateViewModel.upsertCandidate(candidateToUpsert)
 
     return true
 }
@@ -149,22 +210,33 @@ fun verifyAndCreateCandidate(
 @Composable
 private fun CreateCandidate(
     modifier: Modifier = Modifier,
+    avatarUri: Uri?,
     firstName: String,
     lastName: String,
     phoneNumber: String,
+    email: String,
+    birthDay: Long,
+    salary: String,
+    note: String,
+    onAvatarUriChanged: ((uri: Uri) -> Unit),
     onFirstNameChanged: (String) -> Unit,
     onLastNameChanged: (String) -> Unit,
     onPhoneChanged: (String) -> Unit,
+    onEmailChanged: (String) -> Unit,
+    onBirthDayChanged: (Long) -> Unit,
+    onSalaryChanged: (String) -> Unit,
+    onNoteChanged: (String) -> Unit
 ) {
     val scrollState = rememberScrollState()
 
     Column(
         modifier = modifier
-            .padding(bottom = 88.dp, top = 16.dp, start = 16.dp, end = 16.dp)
+            .padding(top = 0.dp, bottom = 0.dp, start = 16.dp, end = 16.dp)
             .fillMaxSize()
             .verticalScroll(scrollState)
     ) {
-        Row {
+        AvatarComponent(avatarUri, onAvatarUriChanged)
+        Row(modifier = Modifier.padding(top = 16.dp)) {
             Icon(
                 modifier = Modifier
                     .padding(top = 8.dp, end = 16.dp)
@@ -177,7 +249,11 @@ private fun CreateCandidate(
                 value = firstName,
                 onValueChange = { onFirstNameChanged(it) },
                 label = { Text(stringResource(id = R.string.first_name)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Words,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                ),
                 singleLine = true
             )
         }
@@ -186,13 +262,19 @@ private fun CreateCandidate(
             modifier = Modifier.padding(top = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer( modifier = Modifier.padding(end = 8.dp).size(32.dp) )
+            Spacer( modifier = Modifier
+                .padding(end = 8.dp)
+                .size(32.dp) )
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = lastName,
                 onValueChange = { onLastNameChanged(it) },
                 label = { Text(stringResource(id = R.string.last_name)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Words,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                ),
                 singleLine = true
             )
         }
@@ -217,6 +299,168 @@ private fun CreateCandidate(
                 isError = false,
                 singleLine = true
             )
+        }
+        Row(
+            modifier = Modifier.padding(top = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                modifier = Modifier
+                    .padding(top = 8.dp, end = 16.dp)
+                    .align(Alignment.CenterVertically),
+                imageVector = Icons.Outlined.Email,
+                contentDescription = stringResource(id = R.string.email)
+            )
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = email,
+                onValueChange = { onEmailChanged(it) },
+                label = { Text(stringResource(id = R.string.email)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                isError = false,
+                singleLine = true
+            )
+        }
+
+        Row(
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
+            Icon(
+                modifier = Modifier
+                    .padding(top = 16.dp, bottom = 16.dp, end = 16.dp),
+                painter = painterResource(R.drawable.cake_24px),
+                contentDescription = stringResource(id = R.string.birthday)
+            )
+            DatePicker(date = birthDay, onDateSelected = onBirthDayChanged)
+        }
+
+        Row(
+            modifier = Modifier.padding(top = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                modifier = Modifier
+                    .padding(top = 8.dp, end = 16.dp)
+                    .align(Alignment.CenterVertically),
+                painter = painterResource(R.drawable.attach_money_24px),
+                contentDescription = stringResource(id = R.string.salary_expectations),
+            )
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = salary,
+                onValueChange = { onSalaryChanged(it) },
+                label = { Text(stringResource(id = R.string.salary_expectations)) },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next
+                ),
+                isError = false,
+                singleLine = true
+            )
+        }
+        Row(
+            modifier = Modifier.padding(top = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                modifier = Modifier
+                    .padding(top = 8.dp, end = 16.dp)
+                    .align(Alignment.CenterVertically),
+                imageVector = Icons.Outlined.Edit,
+                contentDescription = stringResource(id = R.string.notes),
+            )
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = note,
+                onValueChange = { onNoteChanged(it) },
+                label = { Text(stringResource(id = R.string.notes)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                isError = false,
+                singleLine = false
+            )
+        }
+        Spacer(modifier = Modifier.size(80.dp))
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DatePicker(date: Long, onDateSelected: (Long) -> Unit) {
+    var showDatePicker by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState()
+    val selectedDateStr = datePickerState.selectedDateMillis?.let {
+        SimpleDateFormat(stringResource(id = R.string.birthday_pattern), Locale.getDefault())
+            .format(Date(it))
+    } ?: stringResource(id = R.string.date_display_pattern)
+    val selectedDate = datePickerState.selectedDateMillis ?: date
+    val isDateSelected = date != -1L
+
+    LaunchedEffect(datePickerState.selectedDateMillis) {
+        onDateSelected(selectedDate)
+        showDatePicker = false
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp)
+            .background(
+                color = MaterialTheme.colorScheme.secondary,
+                shape = RoundedCornerShape(32.dp)
+            )
+    ) {
+        Row {
+            Text(
+                modifier = Modifier.padding(16.dp),
+                text = stringResource(id = R.string.select_a_date),
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                modifier = Modifier.padding(16.dp),
+                text = stringResource(id = R.string.enter_a_date),
+                style = MaterialTheme.typography.headlineLarge
+            )
+            Icon(
+                modifier = Modifier.padding(end = 16.dp).align(Alignment.CenterVertically),
+                painter = painterResource(R.drawable.today_24px),
+                contentDescription = stringResource(id = R.string.birthday)
+            )
+        }
+        HorizontalDivider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp),
+            color = MaterialTheme.colorScheme.outline
+        )
+        Row(modifier = Modifier.padding(16.dp)) {
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(enabled = !isDateSelected) { showDatePicker = !showDatePicker },
+                value = selectedDateStr,
+                label = { Text(stringResource(id = R.string.date)) },
+                placeholder = { Text(stringResource(id = R.string.birthday_pattern)) },
+                enabled = false,
+                onValueChange = { }
+            )
+        }
+
+        if (showDatePicker) {
+            Popup(
+                onDismissRequest = { showDatePicker = false }
+            ) {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    DatePicker(
+                        state = datePickerState,
+                        showModeToggle = false
+                    )
+                }
+            }
         }
     }
 }

@@ -7,15 +7,17 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import fr.vitesse.android.R
 import java.io.Serializable
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import kotlin.time.ExperimentalTime
 
 @Entity(tableName = "candidates")
 data class Candidate(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    val id: Long = 0,
+    val id: Int = 0,
     @ColumnInfo(name = "email")
     val email: String,
     @ColumnInfo(name = "phone_number")
@@ -25,7 +27,7 @@ data class Candidate(
     @ColumnInfo(name = "last_name")
     val lastName: String,
     @ColumnInfo(name = "birthday")
-    val birthday: LocalDate,
+    val birthday: Long,
     @ColumnInfo(name = "salary")
     val salary: Double,
     @ColumnInfo(name = "note")
@@ -33,14 +35,28 @@ data class Candidate(
     @ColumnInfo(name = "is_favorite")
     val isFavorite: Boolean = false,
     @ColumnInfo(name = "avatar_path")
-    val avatarPath: String? = null,
+    val avatarPath: String,
 ) : Serializable {
     val fullName: String get() = "$firstName ${lastName.uppercase()}"
 
+    @OptIn(ExperimentalTime::class)
     @Composable
     fun formatDateWithAge(): String {
-        val age = ChronoUnit.YEARS.between(birthday, LocalDate.now())
-        val formattedDate = birthday.format(DateTimeFormatter.ofPattern(stringResource(id = R.string.birthday_pattern)))
+        val birthDate = Calendar.getInstance().apply {
+            timeInMillis = birthday
+        }
+
+        val today = Calendar.getInstance()
+        var age = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR)
+        if (today.get(Calendar.DAY_OF_YEAR) < birthDate.get(Calendar.DAY_OF_YEAR)) {
+            age--
+        }
+
+        val formattedDate = SimpleDateFormat(
+            stringResource(id = R.string.birthday_pattern),
+            Locale.getDefault()
+        ).format(Date(birthday))
+
         val ageLabel = "$age " + stringResource(id = R.string.years).lowercase()
 
         return "$formattedDate ($ageLabel)"

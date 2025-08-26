@@ -53,7 +53,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    onCandidateClick: (Long) -> Unit = {},
+    onCandidateClick: (Int) -> Unit = {},
     onAddCandidateClick: () -> Unit = {}
 ) {
     val homeViewModel: HomeViewModel = koinViewModel()
@@ -191,7 +191,7 @@ private fun CandidateList(
     modifier: Modifier = Modifier,
     isLoading: Boolean,
     candidates: List<Candidate>,
-    onCandidateClick: (Long) -> Unit,
+    onCandidateClick: (Int) -> Unit,
 ) {
     when {
         isLoading -> {
@@ -236,7 +236,7 @@ private fun CandidateList(
 @Composable
 private fun HomeCell(
     candidate: Candidate,
-    onCandidateClick: (Long) -> Unit,
+    onCandidateClick: (Int) -> Unit,
 ) {
     Row(
         modifier = Modifier

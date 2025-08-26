@@ -58,7 +58,10 @@ class MainActivity : ComponentActivity() {
                 arguments = Screen.CandidateDetails.navArguments
             ) { backStackEntry ->
                 CandidateDetailsScreen(
-                    onBackClick = { navHostController.navigateUp() }
+                    onBackClick = { navHostController.navigateUp() },
+                    onEditCandidateClick = {
+                        id -> navHostController.navigate(Screen.EditCandidate.createRoute(id))
+                    }
                 )
             }
             composable(route = Screen.CreateCandidate.route
@@ -74,7 +77,7 @@ class MainActivity : ComponentActivity() {
             ) {
                 CreateCandidateScreen (
                     onBackClick = { navHostController.navigateUp() },
-                    onSaveClick = {  }
+                    onSaveClick = { navHostController.navigateUp() }
                 )
             }
         }

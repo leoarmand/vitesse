@@ -33,4 +33,8 @@
     <string name="add_candidate">Ajouter un candidat</string>
     <string name="candidate">Candidat</string>
     <string name="phone">Téléphone</string>
+    <string name="date">Date</string>
+    <string name="select_a_date">Sélectionner une date</string>
+    <string name="enter_a_date">Entrer une date</string>
+    <string name="date_display_pattern">jj/mm/aaaa</string>
 </resources>

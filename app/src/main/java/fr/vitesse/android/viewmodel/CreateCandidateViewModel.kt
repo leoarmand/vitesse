@@ -19,11 +19,17 @@ class CreateCandidateViewModel(
     val candidate: StateFlow<Candidate?> = _candidate
 
     init {
-        val candidateId: Long? = savedStateHandle["candidateId"]
+        val candidateId: Int? = savedStateHandle["candidateId"]
         if (candidateId != null) {
             viewModelScope.launch {
                 _candidate.value = candidateService.getCandidateById(candidateId)
             }
+        }
+    }
+
+    fun upsertCandidate(candidate: Candidate) {
+        viewModelScope.launch {
+            candidateService.upsertCandidate(candidate)
         }
     }
 }

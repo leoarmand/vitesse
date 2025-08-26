@@ -8,6 +8,5 @@ import org.koin.android.annotation.KoinViewModel
 class HomeViewModel (
     candidateService: CandidateService
 ) : ViewModel() {
-    val candidates =
-        candidateService.getAll()
+    val candidates = candidateService.getAll()
 }
