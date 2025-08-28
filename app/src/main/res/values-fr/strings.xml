@@ -37,7 +37,7 @@
     <string name="select_a_date">Sélectionner une date</string>
     <string name="enter_a_date">Entrer une date</string>
     <string name="date_display_pattern">jj/mm/aaaa</string>
-    <string name="invalid_email_format">Format d\'email invalide</string>
-    <string name="invalid_phone_number_format">Numéro de téléphone invalide</string>
     <string name="edit_candidate">Modifier un candidat</string>
+    <string name="invalid_format">Format invalide</string>
+    <string name="mandatory_field">Champ obligatoire</string>
 </resources>

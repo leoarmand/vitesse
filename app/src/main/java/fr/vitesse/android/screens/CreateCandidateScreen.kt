@@ -20,9 +20,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Email
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -37,9 +34,11 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -81,14 +80,15 @@ fun CreateCandidateScreen(
     val titleText = candidate?.id?.let {
         stringResource(id = R.string.edit_candidate)
     } ?: stringResource(id = R.string.add_candidate)
-    val avatarPath = rememberSaveable { mutableStateOf(candidate?.avatarPath ?: "") }
+    val avatarPath = rememberSaveable { mutableStateOf(candidate?.avatarPath) }
     val firstName = rememberSaveable { mutableStateOf(candidate?.firstName ?: "") }
     val lastName = rememberSaveable { mutableStateOf(candidate?.lastName ?: "") }
     val phoneNumber = rememberSaveable { mutableStateOf(candidate?.phoneNumber ?: "") }
     val email = rememberSaveable { mutableStateOf(candidate?.email ?: "") }
-    val birthDay = rememberSaveable { mutableStateOf(candidate?.birthday) }
-    val salary = rememberSaveable { mutableStateOf<String>(candidate?.salary?.toString() ?: "") }
-    val note = rememberSaveable { mutableStateOf(candidate?.note ?: "") }
+    val birthDay = rememberSaveable { mutableStateOf<Long?>(null) }
+    val salary = rememberSaveable { mutableStateOf(candidate?.salary) }
+    val note = rememberSaveable { mutableStateOf(candidate?.note) }
+    val formValidationState = remember { mutableStateOf(false) }
 
     candidate?.let {
         avatarPath.value = it.avatarPath
@@ -97,7 +97,7 @@ fun CreateCandidateScreen(
         phoneNumber.value = it.phoneNumber
         email.value = it.email
         birthDay.value = it.birthday
-        salary.value = it.salary.toString()
+        salary.value = it.salary
         note.value = it.note
     }
 
@@ -105,6 +105,9 @@ fun CreateCandidateScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                ),
                 title = {
                     Text(titleText)
                 },
@@ -131,19 +134,24 @@ fun CreateCandidateScreen(
                     .padding(horizontal = 16.dp),
                 shape = RoundedCornerShape(percent = 50),
                 onClick = {
-                    verifyAndCreateCandidate(
-                        createCandidateViewModel,
-                        candidate?.id ?: 0,
-                        avatarPath.value,
-                        firstName.value,
-                        lastName.value,
-                        phoneNumber.value,
-                        email.value,
-                        birthDay.value,
-                        salary.value,
-                        note.value
-                    )
-                    onSaveClick()
+                    formValidationState.value = true
+
+                    if (
+                        verifyAndCreateCandidate(
+                            createCandidateViewModel,
+                            candidate?.id ?: 0,
+                            avatarPath.value,
+                            firstName.value,
+                            lastName.value,
+                            phoneNumber.value,
+                            email.value,
+                            birthDay.value,
+                            salary.value,
+                            note.value
+                        ))
+                    {
+                        onSaveClick()
+                    }
                 }
             ) {
                 Text(
@@ -169,7 +177,8 @@ fun CreateCandidateScreen(
             onBirthDayChanged = { birthDay.value = it },
             onEmailChanged = { email.value = it },
             onSalaryChanged = { salary.value = it },
-            onNoteChanged = { note.value = it }
+            onNoteChanged = { note.value = it },
+            formValidationState = formValidationState
         )
     }
 }
@@ -177,61 +186,86 @@ fun CreateCandidateScreen(
 fun verifyAndCreateCandidate(
     createCandidateViewModel: CreateCandidateViewModel,
     candidateId: Int,
-    avatarPath: String,
+    avatarPath: String?,
     firstName: String,
     lastName: String,
     phoneNumber: String,
     email: String,
     birthday: Long?,
-    salary: String,
-    note: String
-) {
-    if (birthday != null) {
-        val candidateToUpsert = Candidate(
-            id = candidateId,
-            email = email,
-            phoneNumber = phoneNumber,
-            firstName = firstName,
-            lastName = lastName,
-            birthday = birthday,
-            salary = salary.toDouble(),
-            note = note,
-            avatarPath = avatarPath
-        )
-
-        createCandidateViewModel.upsertCandidate(candidateToUpsert)
+    salary: Double?,
+    note: String?
+): Boolean {
+    if (
+        !(firstName.isNotBlank() &&
+        lastName.isNotBlank() &&
+        phoneNumber.isNotBlank() &&
+        email.isNotBlank() && birthday != null)
+    ) {
+        return false
     }
+
+    val candidateToUpsert = Candidate(
+        id = candidateId,
+        email = email,
+        phoneNumber = phoneNumber,
+        firstName = firstName,
+        lastName = lastName,
+        birthday = birthday,
+        salary = salary,
+        note = note,
+        avatarPath = avatarPath
+    )
+
+    createCandidateViewModel.upsertCandidate(candidateToUpsert)
+
+    return true
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CreateCandidateForm(
     modifier: Modifier = Modifier,
-    avatarPath: String,
+    avatarPath: String?,
     firstName: String,
     lastName: String,
     phoneNumber: String,
     email: String,
     birthDay: Long?,
-    salary: String,
-    note: String,
+    salary: Double?,
+    note: String?,
     onAvatarUriChanged: ((uri: Uri) -> Unit),
     onFirstNameChanged: (String) -> Unit,
     onLastNameChanged: (String) -> Unit,
     onPhoneChanged: (String) -> Unit,
     onEmailChanged: (String) -> Unit,
     onBirthDayChanged: (Long) -> Unit,
-    onSalaryChanged: (String) -> Unit,
-    onNoteChanged: (String) -> Unit
+    onSalaryChanged: (Double) -> Unit,
+    onNoteChanged: (String) -> Unit,
+    formValidationState: MutableState<Boolean>
 ) {
     val scrollState = rememberScrollState()
-    var phoneError by remember { mutableStateOf<String?>(null) }
+    var firstNameError by remember { mutableStateOf<String?>(null) }
+    var lastNameError by remember { mutableStateOf<String?>(null) }
+    var birthDayError by remember { mutableStateOf<String?>(null) }
+    var phoneNumberError by remember { mutableStateOf<String?>(null) }
     var emailError by remember { mutableStateOf<String?>(null) }
-    val phoneNumberErrorDesc: String = stringResource(id = R.string.invalid_phone_number_format)
-    val emailErrorDesc: String = stringResource(id = R.string.invalid_email_format)
+    val formatErrorDesc: String = stringResource(id = R.string.invalid_format)
+    val mandatoryStringDesc: String = stringResource(id = R.string.mandatory_field)
     var avatarUri: Uri? = null
-    if (avatarPath.isNotBlank()) {
+    if (avatarPath?.isNotBlank() == true) {
         avatarUri = avatarPath.toUri()
+    }
+
+    LaunchedEffect(formValidationState.value) {
+        if (formValidationState.value) {
+            firstNameError = if (firstName.isBlank()) mandatoryStringDesc else null
+            lastNameError = if (lastName.isBlank()) mandatoryStringDesc else null
+            phoneNumberError = if (phoneNumber.isBlank()) mandatoryStringDesc else if (!isValidPhoneNumber(phoneNumber)) formatErrorDesc else null
+            emailError = if (email.isBlank()) mandatoryStringDesc else if (!isValidEmail(email)) formatErrorDesc else null
+            birthDayError = if (birthDay == null) mandatoryStringDesc else null
+
+            formValidationState.value = false
+        }
     }
 
     Column(
@@ -240,24 +274,31 @@ private fun CreateCandidateForm(
             .fillMaxSize()
             .verticalScroll(scrollState)
     ) {
-        AvatarComponent(avatarUri, onAvatarUriChanged)
+        AvatarComponent(avatarUri = avatarUri, onAvatarUriChanged = onAvatarUriChanged)
         Row(modifier = Modifier.padding(top = 16.dp)) {
             Icon(
                 modifier = Modifier.padding(top = 24.dp, end = 16.dp),
-                imageVector = Icons.Outlined.Person,
+                painter = painterResource(R.drawable.people_24),
                 contentDescription = stringResource(id = R.string.candidate)
             )
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = firstName,
-                onValueChange = { onFirstNameChanged(it) },
+                onValueChange = {
+                    onFirstNameChanged(it)
+                    firstNameError = if (firstName.isBlank()) mandatoryStringDesc else null
+                },
                 label = { Text(stringResource(id = R.string.first_name)) },
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.Words,
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next
                 ),
-                singleLine = true
+                singleLine = true,
+                isError = firstNameError != null,
+                supportingText = {
+                    firstNameError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                }
             )
         }
 
@@ -270,14 +311,21 @@ private fun CreateCandidateForm(
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = lastName,
-                onValueChange = { onLastNameChanged(it) },
+                onValueChange = {
+                    onLastNameChanged(it)
+                    lastNameError = if (lastName.isBlank()) mandatoryStringDesc else null
+                },
                 label = { Text(stringResource(id = R.string.last_name)) },
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.Words,
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next
                 ),
-                singleLine = true
+                singleLine = true,
+                isError = lastNameError != null,
+                supportingText = {
+                    lastNameError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                }
             )
         }
 
@@ -286,7 +334,7 @@ private fun CreateCandidateForm(
         ) {
             Icon(
                 modifier = Modifier.padding(top = 24.dp, end = 16.dp),
-                imageVector = Icons.Outlined.Phone,
+                painter = painterResource(R.drawable.phone_24),
                 contentDescription = stringResource(id = R.string.phone)
             )
             OutlinedTextField(
@@ -294,14 +342,14 @@ private fun CreateCandidateForm(
                 value = phoneNumber,
                 onValueChange = {
                     onPhoneChanged(it)
-                    phoneError = if (isValidPhoneNumber(it)) null else phoneNumberErrorDesc
+                    phoneNumberError = if (isValidPhoneNumber(it)) null else formatErrorDesc
                 },
                 label = { Text(stringResource(id = R.string.phone)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                isError = phoneError != null,
+                isError = phoneNumberError != null,
                 singleLine = true,
                 supportingText = {
-                    phoneError?.let { Text(text = it, color = MaterialTheme.colorScheme.error) }
+                    phoneNumberError?.let { Text(text = it, color = MaterialTheme.colorScheme.error) }
                 }
             )
         }
@@ -310,7 +358,7 @@ private fun CreateCandidateForm(
         ) {
             Icon(
                 modifier = Modifier.padding(top = 24.dp, end = 16.dp),
-                imageVector = Icons.Outlined.Email,
+                painter = painterResource(R.drawable.mail_24),
                 contentDescription = stringResource(id = R.string.email)
             )
             OutlinedTextField(
@@ -318,7 +366,7 @@ private fun CreateCandidateForm(
                 value = email,
                 onValueChange = {
                     onEmailChanged(it)
-                    emailError = if (isValidEmail(it)) null else emailErrorDesc
+                    emailError = if (isValidEmail(it)) null else formatErrorDesc
                 },
                 label = { Text(stringResource(id = R.string.email)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -335,10 +383,16 @@ private fun CreateCandidateForm(
         ) {
             Icon(
                 modifier = Modifier.padding(top = 24.dp, bottom = 16.dp, end = 16.dp),
-                painter = painterResource(R.drawable.cake_24px),
+                painter = painterResource(R.drawable.cake_24),
                 contentDescription = stringResource(id = R.string.birthday)
             )
-            DatePicker(date = birthDay, onDateSelected = onBirthDayChanged)
+            DatePicker(
+                onDateSelected = {
+                    date -> birthDayError = null
+                    onBirthDayChanged(date) },
+                date = birthDay,
+                birthDayError = birthDayError
+            )
         }
 
         Row(
@@ -346,13 +400,13 @@ private fun CreateCandidateForm(
         ) {
             Icon(
                 modifier = Modifier.padding(top = 24.dp, end = 16.dp),
-                painter = painterResource(R.drawable.attach_money_24px),
+                painter = painterResource(R.drawable.attach_money_24),
                 contentDescription = stringResource(id = R.string.salary_expectations),
             )
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = salary,
-                onValueChange = { onSalaryChanged(it) },
+                value = salary?.toString() ?: "",
+                onValueChange = { onSalaryChanged(it.toDouble()) },
                 label = { Text(stringResource(id = R.string.salary_expectations)) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
@@ -372,7 +426,7 @@ private fun CreateCandidateForm(
             )
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = note,
+                value = note ?: "",
                 onValueChange = { onNoteChanged(it) },
                 label = { Text(stringResource(id = R.string.notes)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
@@ -386,7 +440,7 @@ private fun CreateCandidateForm(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DatePicker(date: Long?, onDateSelected: (Long) -> Unit) {
+fun DatePicker(onDateSelected: (Long) -> Unit, date: Long?, birthDayError: String?) {
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
     val isDateFilled = date != null
@@ -431,8 +485,10 @@ fun DatePicker(date: Long?, onDateSelected: (Long) -> Unit) {
                 style = MaterialTheme.typography.headlineLarge
             )
             Icon(
-                modifier = Modifier.padding(end = 16.dp).align(Alignment.CenterVertically),
-                painter = painterResource(R.drawable.today_24px),
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .align(Alignment.CenterVertically),
+                painter = painterResource(R.drawable.today_24),
                 contentDescription = stringResource(id = R.string.birthday)
             )
         }
@@ -451,7 +507,11 @@ fun DatePicker(date: Long?, onDateSelected: (Long) -> Unit) {
                 label = { Text(stringResource(id = R.string.date)) },
                 placeholder = { Text(stringResource(id = R.string.birthday_pattern)) },
                 enabled = false,
-                onValueChange = { }
+                onValueChange = { },
+                isError = birthDayError != null,
+                supportingText = {
+                    birthDayError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                }
             )
         }
 

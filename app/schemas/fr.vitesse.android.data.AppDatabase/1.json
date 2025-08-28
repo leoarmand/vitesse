@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "26980a2f99c7f509bfa9b876db431cff",
+    "identityHash": "ae88e5b8f6ce12447d8b43e3b3756882",
     "entities": [
       {
         "tableName": "candidates",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `email` TEXT NOT NULL, `phone_number` TEXT NOT NULL, `first_name` TEXT NOT NULL, `last_name` TEXT NOT NULL, `birthday` INTEGER NOT NULL, `salary` REAL NOT NULL, `note` TEXT NOT NULL, `is_favorite` INTEGER NOT NULL, `avatar_path` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `email` TEXT NOT NULL, `phone_number` TEXT NOT NULL, `first_name` TEXT NOT NULL, `last_name` TEXT NOT NULL, `birthday` INTEGER NOT NULL, `salary` REAL, `note` TEXT, `is_favorite` INTEGER NOT NULL, `avatar_path` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -47,14 +47,12 @@
           {
             "fieldPath": "salary",
             "columnName": "salary",
-            "affinity": "REAL",
-            "notNull": true
+            "affinity": "REAL"
           },
           {
             "fieldPath": "note",
             "columnName": "note",
-            "affinity": "TEXT",
-            "notNull": true
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "isFavorite",
@@ -65,8 +63,7 @@
           {
             "fieldPath": "avatarPath",
             "columnName": "avatar_path",
-            "affinity": "TEXT",
-            "notNull": true
+            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -79,7 +76,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '26980a2f99c7f509bfa9b876db431cff')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ae88e5b8f6ce12447d8b43e3b3756882')"
     ]
   }
 }

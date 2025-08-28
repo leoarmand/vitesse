@@ -79,13 +79,15 @@ fun CandidateDetailsScreen(
         val scrollState = rememberScrollState()
         val eurSalary = candidate.salary.toString() + " €"
 
-        val defaultPoundSalary = (candidate.salary * 0.86).toString() + " £"
+        val defaultPoundSalary = (candidate.salary?.times(0.86)).toString() + " £"
         var poundSalary by remember { mutableStateOf(defaultPoundSalary) }
 
         LaunchedEffect(candidate.salary) {
-            poundSalary = String.format(
-                "%.2f £", candidateDetailsViewModel.convertEuroToPounds(candidate.salary)
-            )
+            if (candidate.salary != null) {
+                poundSalary = String.format(
+                    "%.2f £", candidateDetailsViewModel.convertEuroToPounds(candidate.salary)
+                )
+            }
         }
 
         Column(
@@ -94,7 +96,7 @@ fun CandidateDetailsScreen(
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AvatarComponent(avatarUri = candidate.avatarPath.toUri())
+            AvatarComponent(avatarUri = candidate.avatarPath?.toUri())
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -102,21 +104,21 @@ fun CandidateDetailsScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 CandidateAction(
-                    drawableRes = R.drawable.call_24px,
+                    drawableRes = R.drawable.call_24,
                     text = stringResource(id = R.string.call),
                     onClick = {
                         candidateDetailsViewModel.callCandidate()
                     }
                 )
                 CandidateAction(
-                    drawableRes = R.drawable.chat_24px,
+                    drawableRes = R.drawable.chat_24,
                     text = stringResource(id = R.string.sms),
                     onClick = {
                         candidateDetailsViewModel.sendSmsToCandidate()
                     }
                 )
                 CandidateAction(
-                    drawableRes = R.drawable.mail_24px,
+                    drawableRes = R.drawable.mail_24,
                     text = stringResource(id = R.string.email),
                     onClick = {
                         candidateDetailsViewModel.sendEmailToCandidate()
@@ -130,19 +132,23 @@ fun CandidateDetailsScreen(
                     stringResource(id = R.string.birthday)
                 )
             }
-            Row {
-                CandidateCard(
-                    stringResource(id = R.string.salary_expectations),
-                    eurSalary,
-                    stringResource(id = R.string.average_amount).lowercase() + " " + poundSalary
-                )
+            if (candidate.salary != null) {
+                Row {
+                    CandidateCard(
+                        stringResource(id = R.string.salary_expectations),
+                        eurSalary,
+                        stringResource(id = R.string.average_amount).lowercase() + " " + poundSalary
+                    )
+                }
             }
-            Row {
-                CandidateCard(
-                    stringResource(id = R.string.notes),
-                    candidate.note,
-                    subtitle2 = null
-                )
+            if (candidate.note != null) {
+                Row {
+                    CandidateCard(
+                        stringResource(id = R.string.notes),
+                        candidate.note,
+                        subtitle2 = null
+                    )
+                }
             }
         }
     }

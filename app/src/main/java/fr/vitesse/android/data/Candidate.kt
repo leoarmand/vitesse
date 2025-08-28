@@ -29,15 +29,15 @@ data class Candidate(
     @ColumnInfo(name = "birthday")
     val birthday: Long,
     @ColumnInfo(name = "salary")
-    val salary: Double,
+    val salary: Double?,
     @ColumnInfo(name = "note")
-    val note: String,
+    val note: String?,
     @ColumnInfo(name = "is_favorite")
     val isFavorite: Boolean = false,
     @ColumnInfo(name = "avatar_path")
-    val avatarPath: String,
+    val avatarPath: String?,
 ) : Serializable {
-    val fullName: String get() = "$firstName ${lastName.uppercase()}"
+    val fullName get() = "$firstName ${lastName.uppercase()}"
 
     @OptIn(ExperimentalTime::class)
     @Composable

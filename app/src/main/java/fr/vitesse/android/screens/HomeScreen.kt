@@ -1,6 +1,5 @@
 package fr.vitesse.android.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -8,9 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,13 +36,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fr.vitesse.android.data.Candidate
 import fr.vitesse.android.R
+import fr.vitesse.android.components.AvatarComponent
 import fr.vitesse.android.viewmodel.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -69,8 +67,7 @@ fun HomeScreen(
     ): List<Candidate> {
         isLoading = true
         val fCandidates = candidates.filter {
-            val matchesSearch = it.fullName.contains(searchQuery, ignoreCase = true) ||
-                    it.note.contains(searchQuery, ignoreCase = true)
+            val matchesSearch = it.fullName.contains(searchQuery, ignoreCase = true)
             val matchesTab = when (selectedTabIndex) {
                 0 -> true
                 1 -> it.isFavorite
@@ -244,16 +241,10 @@ private fun HomeCell(
             .clickable {
                 onCandidateClick(candidate.id)
             }
-            .padding(16.dp),
+            .padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            modifier = Modifier
-                .width(54.dp)
-                .height(54.dp),
-            painter = painterResource(R.drawable.default_avatar),
-            contentDescription = stringResource(id = R.string.default_avatar)
-        )
+        AvatarComponent(isSmallVersion = true, avatarUri = candidate.avatarPath?.toUri())
         Column(
             modifier = Modifier.padding(start = 16.dp),
         ) {
@@ -262,7 +253,7 @@ private fun HomeCell(
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = candidate.note,
+                text = candidate.note ?: "",
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
