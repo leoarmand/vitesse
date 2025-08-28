@@ -240,6 +240,7 @@ private fun HomeCell(
 ) {
     Row(
         modifier = Modifier
+            .fillMaxWidth()
             .clickable {
                 onCandidateClick(candidate.id)
             }

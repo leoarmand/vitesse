@@ -2,7 +2,6 @@ package fr.vitesse.android.screens
 
 import android.net.Uri
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,13 +18,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.DatePicker
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
@@ -43,7 +40,6 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -87,7 +83,7 @@ fun CreateCandidateScreen(
     val lastName = rememberSaveable { mutableStateOf("") }
     val phoneNumber = rememberSaveable { mutableStateOf("") }
     val email = rememberSaveable { mutableStateOf("") }
-    val birthDay = rememberSaveable { mutableLongStateOf(-1) }
+    val birthDay = rememberSaveable { mutableStateOf<Long?>(null) }
     val salary = rememberSaveable { mutableStateOf("") }
     val note = rememberSaveable { mutableStateOf("") }
 
@@ -97,7 +93,7 @@ fun CreateCandidateScreen(
         lastName.value = it.lastName
         phoneNumber.value = it.phoneNumber
         email.value = it.email
-        birthDay.longValue = it.birthday
+        birthDay.value = it.birthday
         salary.value = it.salary.toString()
         note.value = it.note
     }
@@ -141,7 +137,7 @@ fun CreateCandidateScreen(
                         lastName.value,
                         phoneNumber.value,
                         email.value,
-                        birthDay.longValue,
+                        birthDay.value,
                         salary.value,
                         note.value
                     )
@@ -160,7 +156,7 @@ fun CreateCandidateScreen(
             firstName = firstName.value,
             lastName = lastName.value,
             email = email.value,
-            birthDay = birthDay.longValue,
+            birthDay = birthDay.value,
             salary = salary.value,
             note = note.value,
             onAvatarUriChanged = { avatarUri.value = it },
@@ -168,7 +164,7 @@ fun CreateCandidateScreen(
             onLastNameChanged = { lastName.value = it },
             phoneNumber = phoneNumber.value,
             onPhoneChanged = { phoneNumber.value = it },
-            onBirthDayChanged = { birthDay.longValue = it },
+            onBirthDayChanged = { birthDay.value = it },
             onEmailChanged = { email.value = it },
             onSalaryChanged = { salary.value = it },
             onNoteChanged = { note.value = it }
@@ -184,26 +180,25 @@ fun verifyAndCreateCandidate(
     lastName: String,
     phoneNumber: String,
     email: String,
-    birthday: Long,
+    birthday: Long?,
     salary: String,
     note: String
-): Boolean
-{
-    val candidateToUpsert = Candidate(
-        id = candidate?.id ?: 0,
-        email = email,
-        phoneNumber = phoneNumber,
-        firstName = firstName,
-        lastName = lastName,
-        birthday = birthday,
-        salary = salary.toDouble(),
-        note = note,
-        avatarPath = avatarUri.toString()
-    )
+) {
+    if (birthday != null) {
+        val candidateToUpsert = Candidate(
+            id = candidate?.id ?: 0,
+            email = email,
+            phoneNumber = phoneNumber,
+            firstName = firstName,
+            lastName = lastName,
+            birthday = birthday,
+            salary = salary.toDouble(),
+            note = note,
+            avatarPath = avatarUri.toString()
+        )
 
-    createCandidateViewModel.upsertCandidate(candidateToUpsert)
-
-    return true
+        createCandidateViewModel.upsertCandidate(candidateToUpsert)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -215,7 +210,7 @@ private fun CreateCandidate(
     lastName: String,
     phoneNumber: String,
     email: String,
-    birthDay: Long,
+    birthDay: Long?,
     salary: String,
     note: String,
     onAvatarUriChanged: ((uri: Uri) -> Unit),
@@ -385,18 +380,22 @@ private fun CreateCandidate(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DatePicker(date: Long, onDateSelected: (Long) -> Unit) {
+fun DatePicker(date: Long?, onDateSelected: (Long) -> Unit) {
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
-    val selectedDateStr = datePickerState.selectedDateMillis?.let {
-        SimpleDateFormat(stringResource(id = R.string.birthday_pattern), Locale.getDefault())
-            .format(Date(it))
-    } ?: stringResource(id = R.string.date_display_pattern)
+    val isDateFilled = date != null
     val selectedDate = datePickerState.selectedDateMillis ?: date
-    val isDateSelected = date != -1L
+    var selectedDateStr =
+        stringResource(id = R.string.date_display_pattern)
+    if (isDateFilled) {
+        selectedDateStr = SimpleDateFormat(stringResource(id = R.string.birthday_pattern), Locale.getDefault())
+            .format(Date(date))
+    }
 
     LaunchedEffect(datePickerState.selectedDateMillis) {
-        onDateSelected(selectedDate)
+        if (selectedDate !== null) {
+            onDateSelected(selectedDate)
+        }
         showDatePicker = false
     }
 
@@ -441,7 +440,7 @@ fun DatePicker(date: Long, onDateSelected: (Long) -> Unit) {
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(enabled = !isDateSelected) { showDatePicker = !showDatePicker },
+                    .clickable(enabled = !isDateFilled) { showDatePicker = !showDatePicker },
                 value = selectedDateStr,
                 label = { Text(stringResource(id = R.string.date)) },
                 placeholder = { Text(stringResource(id = R.string.birthday_pattern)) },

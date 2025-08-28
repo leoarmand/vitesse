@@ -20,10 +20,11 @@ class CandidateRepository(
     suspend fun getCandidateById(candidateId: Int) = dao.getCandidateById(candidateId)
 
     suspend fun toggleCandidateFavorite(candidateId: Int) {
-        // ✅ utilise la version suspendue pour récupérer la valeur actuelle
         val retrievedCandidate = dao.getCandidateById(candidateId)
-        val updated = retrievedCandidate.copy(isFavorite = !retrievedCandidate.isFavorite)
-        dao.upsert(updated)
+        if (retrievedCandidate != null) {
+            val updated = retrievedCandidate.copy(isFavorite = !retrievedCandidate.isFavorite)
+            dao.upsert(updated)
+        }
     }
 
     suspend fun deleteCandidate(candidate: Candidate) {

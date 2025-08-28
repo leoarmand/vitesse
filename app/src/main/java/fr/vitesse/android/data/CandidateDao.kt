@@ -13,13 +13,13 @@ interface CandidateDao {
     fun getAll(): Flow<List<Candidate>>
 
     @Query("SELECT * FROM candidates WHERE id = :candidateId")
-    fun getCandidateFlowById(candidateId: Int): Flow<Candidate>
+    fun getCandidateFlowById(candidateId: Int): Flow<Candidate?>
 
     @Upsert
     suspend fun upsert(candidate: Candidate)
 
     @Query("SELECT * FROM candidates WHERE id = :candidateId")
-    suspend fun getCandidateById(candidateId: Int): Candidate
+    suspend fun getCandidateById(candidateId: Int): Candidate?
 
     @Delete
     suspend fun delete(candidate: Candidate)
