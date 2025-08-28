@@ -1,6 +1,7 @@
 package fr.vitesse.android.screens
 
 import android.net.Uri
+import android.util.Patterns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -63,7 +64,6 @@ import androidx.core.net.toUri
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.toString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,17 +78,20 @@ fun CreateCandidateScreen(
     val collectedCandidate by createCandidateViewModel.candidate.collectAsStateWithLifecycle()
     val candidate = collectedCandidate
 
-    val avatarUri = rememberSaveable { mutableStateOf<Uri?>(null) }
-    val firstName = rememberSaveable { mutableStateOf("") }
-    val lastName = rememberSaveable { mutableStateOf("") }
-    val phoneNumber = rememberSaveable { mutableStateOf("") }
-    val email = rememberSaveable { mutableStateOf("") }
-    val birthDay = rememberSaveable { mutableStateOf<Long?>(null) }
-    val salary = rememberSaveable { mutableStateOf("") }
-    val note = rememberSaveable { mutableStateOf("") }
+    val titleText = candidate?.id?.let {
+        stringResource(id = R.string.edit_candidate)
+    } ?: stringResource(id = R.string.add_candidate)
+    val avatarPath = rememberSaveable { mutableStateOf(candidate?.avatarPath ?: "") }
+    val firstName = rememberSaveable { mutableStateOf(candidate?.firstName ?: "") }
+    val lastName = rememberSaveable { mutableStateOf(candidate?.lastName ?: "") }
+    val phoneNumber = rememberSaveable { mutableStateOf(candidate?.phoneNumber ?: "") }
+    val email = rememberSaveable { mutableStateOf(candidate?.email ?: "") }
+    val birthDay = rememberSaveable { mutableStateOf(candidate?.birthday) }
+    val salary = rememberSaveable { mutableStateOf<String>(candidate?.salary?.toString() ?: "") }
+    val note = rememberSaveable { mutableStateOf(candidate?.note ?: "") }
 
     candidate?.let {
-        avatarUri.value = it.avatarPath?.toUri()
+        avatarPath.value = it.avatarPath
         firstName.value = it.firstName
         lastName.value = it.lastName
         phoneNumber.value = it.phoneNumber
@@ -103,7 +106,7 @@ fun CreateCandidateScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(stringResource(id = R.string.add_candidate))
+                    Text(titleText)
                 },
                 navigationIcon = {
                     IconButton(onClick = {
@@ -128,11 +131,10 @@ fun CreateCandidateScreen(
                     .padding(horizontal = 16.dp),
                 shape = RoundedCornerShape(percent = 50),
                 onClick = {
-                    //val regex = Regex("^[+]?[0-9]{6,15}$")
-                    //if (!regex.matches(phoneNumber.value)) {
                     verifyAndCreateCandidate(
-                        createCandidateViewModel,candidate,
-                        avatarUri.value,
+                        createCandidateViewModel,
+                        candidate?.id ?: 0,
+                        avatarPath.value,
                         firstName.value,
                         lastName.value,
                         phoneNumber.value,
@@ -150,16 +152,16 @@ fun CreateCandidateScreen(
             }
         }
     ) { contentPadding ->
-        CreateCandidate(
+        CreateCandidateForm(
             modifier = Modifier.padding(contentPadding),
-            avatarUri = avatarUri.value,
+            avatarPath = avatarPath.value,
             firstName = firstName.value,
             lastName = lastName.value,
             email = email.value,
             birthDay = birthDay.value,
             salary = salary.value,
             note = note.value,
-            onAvatarUriChanged = { avatarUri.value = it },
+            onAvatarUriChanged = { avatarPath.value = it.toString() },
             onFirstNameChanged = { firstName.value = it },
             onLastNameChanged = { lastName.value = it },
             phoneNumber = phoneNumber.value,
@@ -174,8 +176,8 @@ fun CreateCandidateScreen(
 
 fun verifyAndCreateCandidate(
     createCandidateViewModel: CreateCandidateViewModel,
-    candidate: Candidate?,
-    avatarUri: Uri?,
+    candidateId: Int,
+    avatarPath: String,
     firstName: String,
     lastName: String,
     phoneNumber: String,
@@ -186,7 +188,7 @@ fun verifyAndCreateCandidate(
 ) {
     if (birthday != null) {
         val candidateToUpsert = Candidate(
-            id = candidate?.id ?: 0,
+            id = candidateId,
             email = email,
             phoneNumber = phoneNumber,
             firstName = firstName,
@@ -194,7 +196,7 @@ fun verifyAndCreateCandidate(
             birthday = birthday,
             salary = salary.toDouble(),
             note = note,
-            avatarPath = avatarUri.toString()
+            avatarPath = avatarPath
         )
 
         createCandidateViewModel.upsertCandidate(candidateToUpsert)
@@ -203,9 +205,9 @@ fun verifyAndCreateCandidate(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CreateCandidate(
+private fun CreateCandidateForm(
     modifier: Modifier = Modifier,
-    avatarUri: Uri?,
+    avatarPath: String,
     firstName: String,
     lastName: String,
     phoneNumber: String,
@@ -223,6 +225,14 @@ private fun CreateCandidate(
     onNoteChanged: (String) -> Unit
 ) {
     val scrollState = rememberScrollState()
+    var phoneError by remember { mutableStateOf<String?>(null) }
+    var emailError by remember { mutableStateOf<String?>(null) }
+    val phoneNumberErrorDesc: String = stringResource(id = R.string.invalid_phone_number_format)
+    val emailErrorDesc: String = stringResource(id = R.string.invalid_email_format)
+    var avatarUri: Uri? = null
+    if (avatarPath.isNotBlank()) {
+        avatarUri = avatarPath.toUri()
+    }
 
     Column(
         modifier = modifier
@@ -233,9 +243,7 @@ private fun CreateCandidate(
         AvatarComponent(avatarUri, onAvatarUriChanged)
         Row(modifier = Modifier.padding(top = 16.dp)) {
             Icon(
-                modifier = Modifier
-                    .padding(top = 8.dp, end = 16.dp)
-                    .align(Alignment.CenterVertically),
+                modifier = Modifier.padding(top = 24.dp, end = 16.dp),
                 imageVector = Icons.Outlined.Person,
                 contentDescription = stringResource(id = R.string.candidate)
             )
@@ -254,8 +262,7 @@ private fun CreateCandidate(
         }
 
         Row(
-            modifier = Modifier.padding(top = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(top = 16.dp)
         ) {
             Spacer( modifier = Modifier
                 .padding(end = 8.dp)
@@ -275,45 +282,51 @@ private fun CreateCandidate(
         }
 
         Row(
-            modifier = Modifier.padding(top = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(top = 16.dp)
         ) {
             Icon(
-                modifier = Modifier
-                    .padding(top = 8.dp, end = 16.dp)
-                    .align(Alignment.CenterVertically),
+                modifier = Modifier.padding(top = 24.dp, end = 16.dp),
                 imageVector = Icons.Outlined.Phone,
                 contentDescription = stringResource(id = R.string.phone)
             )
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = phoneNumber,
-                onValueChange = { onPhoneChanged(it) },
+                onValueChange = {
+                    onPhoneChanged(it)
+                    phoneError = if (isValidPhoneNumber(it)) null else phoneNumberErrorDesc
+                },
                 label = { Text(stringResource(id = R.string.phone)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                isError = false,
-                singleLine = true
+                isError = phoneError != null,
+                singleLine = true,
+                supportingText = {
+                    phoneError?.let { Text(text = it, color = MaterialTheme.colorScheme.error) }
+                }
             )
         }
         Row(
-            modifier = Modifier.padding(top = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(top = 16.dp)
         ) {
             Icon(
-                modifier = Modifier
-                    .padding(top = 8.dp, end = 16.dp)
-                    .align(Alignment.CenterVertically),
+                modifier = Modifier.padding(top = 24.dp, end = 16.dp),
                 imageVector = Icons.Outlined.Email,
                 contentDescription = stringResource(id = R.string.email)
             )
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = email,
-                onValueChange = { onEmailChanged(it) },
+                onValueChange = {
+                    onEmailChanged(it)
+                    emailError = if (isValidEmail(it)) null else emailErrorDesc
+                },
                 label = { Text(stringResource(id = R.string.email)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                isError = false,
-                singleLine = true
+                isError = emailError != null,
+                singleLine = true,
+                supportingText = {
+                    emailError?.let { Text(text = it, color = MaterialTheme.colorScheme.error) }
+                }
             )
         }
 
@@ -321,8 +334,7 @@ private fun CreateCandidate(
             modifier = Modifier.padding(top = 16.dp)
         ) {
             Icon(
-                modifier = Modifier
-                    .padding(top = 16.dp, bottom = 16.dp, end = 16.dp),
+                modifier = Modifier.padding(top = 24.dp, bottom = 16.dp, end = 16.dp),
                 painter = painterResource(R.drawable.cake_24px),
                 contentDescription = stringResource(id = R.string.birthday)
             )
@@ -330,13 +342,10 @@ private fun CreateCandidate(
         }
 
         Row(
-            modifier = Modifier.padding(top = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(top = 16.dp)
         ) {
             Icon(
-                modifier = Modifier
-                    .padding(top = 8.dp, end = 16.dp)
-                    .align(Alignment.CenterVertically),
+                modifier = Modifier.padding(top = 24.dp, end = 16.dp),
                 painter = painterResource(R.drawable.attach_money_24px),
                 contentDescription = stringResource(id = R.string.salary_expectations),
             )
@@ -354,13 +363,10 @@ private fun CreateCandidate(
             )
         }
         Row(
-            modifier = Modifier.padding(top = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(top = 16.dp)
         ) {
             Icon(
-                modifier = Modifier
-                    .padding(top = 8.dp, end = 16.dp)
-                    .align(Alignment.CenterVertically),
+                modifier = Modifier.padding(top = 24.dp, end = 16.dp),
                 imageVector = Icons.Outlined.Edit,
                 contentDescription = stringResource(id = R.string.notes),
             )
@@ -462,4 +468,12 @@ fun DatePicker(date: Long?, onDateSelected: (Long) -> Unit) {
             }
         }
     }
+}
+
+private fun isValidPhoneNumber(phoneNumber: String): Boolean {
+    return Patterns.PHONE.matcher(phoneNumber).matches()
+}
+
+private fun isValidEmail(email: String): Boolean {
+    return Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }

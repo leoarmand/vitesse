@@ -37,4 +37,7 @@
     <string name="select_a_date">Select a date</string>
     <string name="enter_a_date">Enter a date</string>
     <string name="date_display_pattern">dd/mm/yyyy</string>
+    <string name="invalid_email_format">Invalid email format</string>
+    <string name="invalid_phone_number_format">Invalid phone number format</string>
+    <string name="edit_candidate">Edit a candidate</string>
 </resources>
