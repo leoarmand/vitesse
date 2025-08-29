@@ -12,7 +12,8 @@ composeBom = "2025.07.00"
 material = "1.12.0"
 koin = "4.1.0"
 koin-annotations = "2.1.0"
-ktor = "3.2.2"
+kotlinx = "1.10.2"
+ktor = "3.2.3"
 room = "2.7.2"
 navigationCommonAndroid = "2.9.2"
 kotlinStdlib = "2.2.0"
@@ -20,6 +21,7 @@ kotlinTest = "2.2.0"
 runner = "1.6.2"
 core = "1.6.1"
 coil = "3.3.0"
+mockk = "1.13.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -48,7 +50,6 @@ koin-androidx-compose = { group = "io.insert-koin", name="koin-androidx-compose"
 koin-annotations = { group = "io.insert-koin", name="koin-annotations", version.ref = "koin-annotations" }
 koin-ksp = { group = "io.insert-koin", name="koin-ksp-compiler", version.ref = "koin-annotations" }
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
-ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
@@ -56,6 +57,8 @@ androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlinTest" }
 material-android = { group = "com.google.android.material", name = "material", version.ref = "material" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
