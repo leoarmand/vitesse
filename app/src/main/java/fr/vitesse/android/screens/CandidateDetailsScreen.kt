@@ -1,6 +1,5 @@
 package fr.vitesse.android.screens
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,8 +20,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Call
+import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Mail
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -42,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -104,21 +107,21 @@ fun CandidateDetailsScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 CandidateAction(
-                    drawableRes = R.drawable.call_24,
+                    imageVector = Icons.Outlined.Call,
                     text = stringResource(id = R.string.call),
                     onClick = {
                         candidateDetailsViewModel.callCandidate()
                     }
                 )
                 CandidateAction(
-                    drawableRes = R.drawable.chat_24,
+                    imageVector = Icons.Outlined.Chat,
                     text = stringResource(id = R.string.sms),
                     onClick = {
                         candidateDetailsViewModel.sendSmsToCandidate()
                     }
                 )
                 CandidateAction(
-                    drawableRes = R.drawable.mail_24,
+                    imageVector = Icons.Outlined.Mail,
                     text = stringResource(id = R.string.email),
                     onClick = {
                         candidateDetailsViewModel.sendEmailToCandidate()
@@ -258,7 +261,7 @@ private fun CandidateFavoriteIcon(
 @Composable
 private fun CandidateAction(
     modifier: Modifier = Modifier,
-    @DrawableRes drawableRes: Int,
+    imageVector: ImageVector,
     text: String,
     onClick: () -> Unit = {}
 ) {
@@ -275,7 +278,7 @@ private fun CandidateAction(
                 .width(32.dp)
                 .height(32.dp),
             tint = MaterialTheme.colorScheme.onSurface,
-            painter = painterResource(drawableRes),
+            imageVector = imageVector,
             contentDescription = text
         )
         Spacer(modifier = Modifier.height(8.dp))

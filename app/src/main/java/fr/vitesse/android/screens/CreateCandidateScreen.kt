@@ -19,7 +19,16 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.AttachEmail
+import androidx.compose.material.icons.outlined.AttachMoney
+import androidx.compose.material.icons.outlined.Cake
+import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Mail
+import androidx.compose.material.icons.outlined.People
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Phone
+import androidx.compose.material.icons.outlined.Today
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -274,11 +283,12 @@ private fun CreateCandidateForm(
             .fillMaxSize()
             .verticalScroll(scrollState)
     ) {
+        Spacer(modifier = Modifier.size(4.dp))
         AvatarComponent(avatarUri = avatarUri, onAvatarUriChanged = onAvatarUriChanged)
         Row(modifier = Modifier.padding(top = 16.dp)) {
             Icon(
                 modifier = Modifier.padding(top = 24.dp, end = 16.dp),
-                painter = painterResource(R.drawable.people_24),
+                imageVector = Icons.Outlined.Person,
                 contentDescription = stringResource(id = R.string.candidate)
             )
             OutlinedTextField(
@@ -334,7 +344,7 @@ private fun CreateCandidateForm(
         ) {
             Icon(
                 modifier = Modifier.padding(top = 24.dp, end = 16.dp),
-                painter = painterResource(R.drawable.phone_24),
+                imageVector = Icons.Outlined.Phone,
                 contentDescription = stringResource(id = R.string.phone)
             )
             OutlinedTextField(
@@ -358,7 +368,7 @@ private fun CreateCandidateForm(
         ) {
             Icon(
                 modifier = Modifier.padding(top = 24.dp, end = 16.dp),
-                painter = painterResource(R.drawable.mail_24),
+                imageVector = Icons.Outlined.Mail,
                 contentDescription = stringResource(id = R.string.email)
             )
             OutlinedTextField(
@@ -383,7 +393,7 @@ private fun CreateCandidateForm(
         ) {
             Icon(
                 modifier = Modifier.padding(top = 24.dp, bottom = 16.dp, end = 16.dp),
-                painter = painterResource(R.drawable.cake_24),
+                imageVector = Icons.Outlined.Cake,
                 contentDescription = stringResource(id = R.string.birthday)
             )
             DatePicker(
@@ -400,7 +410,7 @@ private fun CreateCandidateForm(
         ) {
             Icon(
                 modifier = Modifier.padding(top = 24.dp, end = 16.dp),
-                painter = painterResource(R.drawable.attach_money_24),
+                imageVector = Icons.Outlined.AttachMoney,
                 contentDescription = stringResource(id = R.string.salary_expectations),
             )
             OutlinedTextField(
@@ -488,7 +498,7 @@ fun DatePicker(onDateSelected: (Long) -> Unit, date: Long?, birthDayError: Strin
                 modifier = Modifier
                     .padding(end = 16.dp)
                     .align(Alignment.CenterVertically),
-                painter = painterResource(R.drawable.today_24),
+                imageVector = Icons.Outlined.Today,
                 contentDescription = stringResource(id = R.string.birthday)
             )
         }
