@@ -1,7 +1,6 @@
 package fr.vitesse.android.screens
 
 import android.net.Uri
-import android.util.Patterns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -282,31 +282,22 @@ private fun CreateCandidateForm(
             .verticalScroll(scrollState)
     ) {
         Spacer(modifier = Modifier.size(4.dp))
+
         AvatarComponent(avatarUri = avatarUri, onAvatarUriChanged = onAvatarUriChanged)
+
         Row(modifier = Modifier.padding(top = 16.dp)) {
             Icon(
                 modifier = Modifier.padding(top = 24.dp, end = 16.dp),
                 imageVector = Icons.Outlined.Person,
                 contentDescription = stringResource(id = R.string.candidate)
             )
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = firstName,
+            FirstNameTextField(
+                firstName = firstName,
                 onValueChange = {
                     onFirstNameChanged(it)
                     firstNameError = if (firstName.isBlank()) mandatoryStringDesc else null
                 },
-                label = { Text(stringResource(id = R.string.first_name)) },
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Words,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                ),
-                singleLine = true,
-                isError = firstNameError != null,
-                supportingText = {
-                    firstNameError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-                }
+                firstNameError = firstNameError
             )
         }
 
@@ -316,24 +307,13 @@ private fun CreateCandidateForm(
             Spacer( modifier = Modifier
                 .padding(end = 8.dp)
                 .size(32.dp) )
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = lastName,
+            LastNameTextField(
+                lastName = lastName,
                 onValueChange = {
                     onLastNameChanged(it)
                     lastNameError = if (lastName.isBlank()) mandatoryStringDesc else null
                 },
-                label = { Text(stringResource(id = R.string.last_name)) },
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Words,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                ),
-                singleLine = true,
-                isError = lastNameError != null,
-                supportingText = {
-                    lastNameError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-                }
+                lastNameError = lastNameError
             )
         }
 
@@ -345,20 +325,13 @@ private fun CreateCandidateForm(
                 imageVector = Icons.Outlined.Phone,
                 contentDescription = stringResource(id = R.string.phone)
             )
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = phoneNumber,
+            PhoneNumberTextField(
+                phoneNumber = phoneNumber,
                 onValueChange = {
                     onPhoneChanged(it)
                     phoneNumberError = if (isValidPhoneNumber(it)) null else formatErrorDesc
                 },
-                label = { Text(stringResource(id = R.string.phone)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                isError = phoneNumberError != null,
-                singleLine = true,
-                supportingText = {
-                    phoneNumberError?.let { Text(text = it, color = MaterialTheme.colorScheme.error) }
-                }
+                phoneNumberError = phoneNumberError
             )
         }
         Row(
@@ -369,20 +342,13 @@ private fun CreateCandidateForm(
                 imageVector = Icons.Outlined.Mail,
                 contentDescription = stringResource(id = R.string.email)
             )
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = email,
+            EmailTextField(
+                email = email,
                 onValueChange = {
                     onEmailChanged(it)
                     emailError = if (isValidEmail(it)) null else formatErrorDesc
                 },
-                label = { Text(stringResource(id = R.string.email)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                isError = emailError != null,
-                singleLine = true,
-                supportingText = {
-                    emailError?.let { Text(text = it, color = MaterialTheme.colorScheme.error) }
-                }
+                emailError = emailError
             )
         }
 
@@ -411,19 +377,12 @@ private fun CreateCandidateForm(
                 imageVector = Icons.Outlined.AttachMoney,
                 contentDescription = stringResource(id = R.string.salary_expectations),
             )
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = salary?.toString() ?: "",
-                onValueChange = { onSalaryChanged(it.toDouble()) },
-                label = { Text(stringResource(id = R.string.salary_expectations)) },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next
-                ),
-                isError = false,
-                singleLine = true
+            SalaryTextField(
+                salary = salary,
+                onSalaryChanged = onSalaryChanged
             )
         }
+
         Row(
             modifier = Modifier.padding(top = 16.dp)
         ) {
@@ -432,23 +391,110 @@ private fun CreateCandidateForm(
                 imageVector = Icons.Outlined.Edit,
                 contentDescription = stringResource(id = R.string.notes),
             )
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = note ?: "",
-                onValueChange = { onNoteChanged(it) },
-                label = { Text(stringResource(id = R.string.notes)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                isError = false,
-                singleLine = false
+            NoteTextField(
+                note = note,
+                onNoteChanged = onNoteChanged
             )
         }
+
         Spacer(modifier = Modifier.size(80.dp))
     }
 }
 
+@Composable
+fun FirstNameTextField(
+    firstName: String,
+    onValueChange: (String) -> Unit,
+    firstNameError: String?,
+) {
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = firstName,
+        onValueChange = onValueChange,
+        label = { Text(stringResource(id = R.string.first_name)) },
+        keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.Words,
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Next
+        ),
+        singleLine = true,
+        isError = firstNameError != null,
+        supportingText = {
+            firstNameError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+        }
+    )
+}
+
+@Composable
+fun LastNameTextField(
+    lastName: String,
+    onValueChange: (String) -> Unit,
+    lastNameError: String?
+) {
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = lastName,
+        onValueChange = onValueChange,
+        label = { Text(stringResource(id = R.string.last_name)) },
+        keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.Words,
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Next
+        ),
+        singleLine = true,
+        isError = lastNameError != null,
+        supportingText = {
+            lastNameError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+        }
+    )
+}
+
+@Composable
+fun PhoneNumberTextField(
+    phoneNumber: String,
+    onValueChange: (String) -> Unit,
+    phoneNumberError: String?
+) {
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = phoneNumber,
+        onValueChange = onValueChange,
+        label = { Text(stringResource(id = R.string.phone)) },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+        isError = phoneNumberError != null,
+        singleLine = true,
+        supportingText = {
+            phoneNumberError?.let { Text(text = it, color = MaterialTheme.colorScheme.error) }
+        }
+    )
+}
+
+@Composable
+fun EmailTextField(
+    email: String,
+    onValueChange: (String) -> Unit,
+    emailError: String?
+) {
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = email,
+        onValueChange = onValueChange,
+        label = { Text(stringResource(id = R.string.email)) },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+        isError = emailError != null,
+        singleLine = true,
+        supportingText = {
+            emailError?.let { Text(text = it, color = MaterialTheme.colorScheme.error) }
+        }
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DatePicker(onDateSelected: (Long) -> Unit, date: Long?, birthDayError: String?) {
+fun DatePicker(
+    onDateSelected: (Long) -> Unit,
+    date: Long?, birthDayError: String?
+) {
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
     val isDateFilled = date != null
@@ -536,4 +582,41 @@ fun DatePicker(onDateSelected: (Long) -> Unit, date: Long?, birthDayError: Strin
             }
         }
     }
+}
+
+@Composable
+fun SalaryTextField(
+    salary: Double?,
+    onSalaryChanged: (Double) -> Unit
+) {
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = salary?.toString() ?: "",
+        onValueChange = { onSalaryChanged(it.toDouble()) },
+        label = { Text(stringResource(id = R.string.salary_expectations)) },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Next
+        ),
+        isError = false,
+        singleLine = true
+    )
+}
+
+@Composable
+fun NoteTextField(
+    note: String?,
+    onNoteChanged: (String) -> Unit
+) {
+    OutlinedTextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = 120.dp),
+        value = note ?: "",
+        onValueChange = onNoteChanged,
+        label = { Text(stringResource(id = R.string.notes)) },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        isError = false,
+        singleLine = false
+    )
 }
