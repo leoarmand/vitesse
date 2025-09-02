@@ -28,7 +28,7 @@ class CandidateRepositoryTest {
     }
 
     @Test
-    fun getAllReturnsFlowOfCandidates() = runTest {
+    fun getAllFlowOfCandidates() = runTest {
         val candidates = listOf(
             Candidate(1, "test1@mail.com", "1234", "John", "Doe", 0L, null, null, false, null),
             Candidate(2, "test2@mail.com", "5678", "Jane", "Smith", 0L, null, null, true, null),
@@ -41,7 +41,7 @@ class CandidateRepositoryTest {
     }
 
     @Test
-    fun getCandidateFlowByIdReturnsCorrectFlow() = runTest {
+    fun getCandidateFlowByIdCorrectFlow() = runTest {
         val candidate = Candidate(1, "test@mail.com", "1234", "John", "Doe", 0L, null, null, false, null)
         every { dao.getCandidateFlowById(1) } returns flowOf(candidate)
 
@@ -61,7 +61,7 @@ class CandidateRepositoryTest {
     }
 
     @Test
-    fun getCandidateByIdReturnsCandidate() = runTest {
+    fun getCandidateById() = runTest {
         val candidate = Candidate(1, "test@mail.com", "1234", "John", "Doe", 0L, null, null, false, null)
         coEvery { dao.getCandidateById(1) } returns candidate
 

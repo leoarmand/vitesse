@@ -5,11 +5,12 @@ import androidx.room.Room
 import fr.vitesse.android.data.AppDatabase
 import org.koin.dsl.module
 
+const val dbName = "vitesse-db"
 class DatabaseModule (context: Context) {
     val appDatabase = Room.databaseBuilder(
         context,
         AppDatabase::class.java,
-        "vitesse-db"
+        dbName
     ).build()
 
     val module = module {
