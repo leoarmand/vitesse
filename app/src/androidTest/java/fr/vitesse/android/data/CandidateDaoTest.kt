@@ -39,9 +39,9 @@ class CandidateDaoTest {
         phoneNumber: String = "1234567890",
         firstName: String = "John",
         lastName: String = "Doe",
-        birthday: Long = System.currentTimeMillis() - 25L * 365 * 24 * 60 * 60 * 1000, // 25 years ago
+        birthday: Long = System.currentTimeMillis() - 25L * 365 * 24 * 60 * 60 * 1000, //25 years old
         salary: Double? = 45000.0,
-        note: String? = "Sample note",
+        note: String? = "Some note",
         isFavorite: Boolean = false,
         avatarPath: String? = null
     ) = Candidate(

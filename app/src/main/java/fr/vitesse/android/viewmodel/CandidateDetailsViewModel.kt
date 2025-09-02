@@ -1,5 +1,6 @@
 package fr.vitesse.android.viewmodel
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -62,5 +63,10 @@ class CandidateDetailsViewModel (
 
     fun sendEmailToCandidate() {
         candidateActionComposerModule.sendEmail(_candidate.value!!.email)
+    }
+
+    @VisibleForTesting
+    fun setCandidateForTest(candidate: Candidate) {
+        _candidate.value = candidate
     }
 }

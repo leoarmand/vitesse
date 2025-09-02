@@ -218,7 +218,8 @@ fun CandidateDetailsScreen(
                     }) {
                         Icon(
                             imageVector = Icons.Outlined.Edit,
-                            contentDescription = stringResource(id = R.string.edit)
+                            contentDescription = stringResource(id = R.string.edit),
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                     IconButton(onClick = {
@@ -226,7 +227,8 @@ fun CandidateDetailsScreen(
                     }) {
                         Icon(
                             imageVector = Icons.Outlined.Delete,
-                            contentDescription = stringResource(id = R.string.delete)
+                            contentDescription = stringResource(id = R.string.delete),
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -248,13 +250,15 @@ private fun CandidateFavoriteIcon(
     if (isFavorite) {
         return Icon(
             imageVector = Icons.Filled.Star,
-            contentDescription = stringResource(id = R.string.favorite)
+            contentDescription = stringResource(id = R.string.favorite),
+            tint = MaterialTheme.colorScheme.onSurface
         )
     }
 
     return Icon(
         painter = painterResource(R.drawable.outlined_star_24),
-        contentDescription = stringResource(id = R.string.favorite)
+        contentDescription = stringResource(id = R.string.favorite),
+        tint = MaterialTheme.colorScheme.onSurface
     )
 }
 
@@ -312,7 +316,7 @@ private fun CandidateCard (
                 modifier = Modifier.padding(bottom = 8.dp),
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -320,7 +324,7 @@ private fun CandidateCard (
             Text(
                 text = subtitle1,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             if (subtitle2.isNullOrBlank().not()) {
@@ -329,7 +333,7 @@ private fun CandidateCard (
                 Text(
                     text = subtitle2,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }

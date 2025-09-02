@@ -158,7 +158,10 @@ private fun SearchCandidateBar(
                 searchQuery = searchedQuery
                 onValueChange(searchedQuery)
             },
-            placeholder = { Text(stringResource(R.string.search_a_candidate)) },
+            placeholder = { Text(
+                text = stringResource(R.string.search_a_candidate),
+                color = MaterialTheme.colorScheme.onSurface
+            ) },
             modifier = Modifier
                 .clip(RoundedCornerShape(36.dp))
                 .background(MaterialTheme.colorScheme.secondaryContainer)
@@ -166,7 +169,11 @@ private fun SearchCandidateBar(
                 .align(Alignment.Center),
             singleLine = true,
             trailingIcon = {
-                Icon(Icons.Filled.Search, contentDescription = stringResource(R.string.search))
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = stringResource(R.string.search),
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
             },
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
@@ -175,9 +182,9 @@ private fun SearchCandidateBar(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
-                focusedTextColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                unfocusedTextColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                cursorColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                cursorColor = MaterialTheme.colorScheme.onSurface,
             )
         )
     }
