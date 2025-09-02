@@ -33,6 +33,43 @@ class CreateCandidateViewModel(
             candidateService.upsertCandidate(candidate)
         }
     }
+
+    fun verifyAndCreateCandidate(
+        candidateId: Int,
+        avatarPath: String?,
+        firstName: String,
+        lastName: String,
+        phoneNumber: String,
+        email: String,
+        birthday: Long?,
+        salary: Double?,
+        note: String?
+    ): Boolean {
+        if (
+            !(firstName.isNotBlank() &&
+                    lastName.isNotBlank() &&
+                    phoneNumber.isNotBlank() &&
+                    email.isNotBlank() && birthday != null)
+        ) {
+            return false
+        }
+
+        val candidateToUpsert = Candidate(
+            id = candidateId,
+            email = email,
+            phoneNumber = phoneNumber,
+            firstName = firstName,
+            lastName = lastName,
+            birthday = birthday,
+            salary = salary,
+            note = note,
+            avatarPath = avatarPath
+        )
+
+        upsertCandidate(candidateToUpsert)
+
+        return true
+    }
 }
 
 fun isValidPhoneNumber(phoneNumber: String): Boolean {

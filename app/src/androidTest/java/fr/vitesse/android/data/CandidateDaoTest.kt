@@ -3,7 +3,6 @@ package fr.vitesse.android.data
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import fr.vitesse.android.module.dbName
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -19,10 +18,9 @@ class CandidateDaoTest {
 
     @Before
     fun setUp() {
-        database = Room.databaseBuilder(
+        database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
-            AppDatabase::class.java,
-            dbName
+            AppDatabase::class.java
         ).build()
 
         candidateDao = database.candidateDao()

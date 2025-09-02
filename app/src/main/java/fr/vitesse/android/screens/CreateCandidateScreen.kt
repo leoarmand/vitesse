@@ -61,7 +61,6 @@ import androidx.compose.ui.window.Popup
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fr.vitesse.android.R
 import fr.vitesse.android.components.AvatarComponent
-import fr.vitesse.android.data.Candidate
 import fr.vitesse.android.viewmodel.CreateCandidateViewModel
 import org.koin.androidx.compose.koinViewModel
 import androidx.core.net.toUri
@@ -144,8 +143,7 @@ fun CreateCandidateScreen(
                     formValidationState.value = true
 
                     if (
-                        verifyAndCreateCandidate(
-                            createCandidateViewModel,
+                        createCandidateViewModel.verifyAndCreateCandidate(
                             candidate?.id ?: 0,
                             avatarPath.value,
                             firstName.value,
@@ -188,44 +186,6 @@ fun CreateCandidateScreen(
             formValidationState = formValidationState
         )
     }
-}
-
-fun verifyAndCreateCandidate(
-    createCandidateViewModel: CreateCandidateViewModel,
-    candidateId: Int,
-    avatarPath: String?,
-    firstName: String,
-    lastName: String,
-    phoneNumber: String,
-    email: String,
-    birthday: Long?,
-    salary: Double?,
-    note: String?
-): Boolean {
-    if (
-        !(firstName.isNotBlank() &&
-        lastName.isNotBlank() &&
-        phoneNumber.isNotBlank() &&
-        email.isNotBlank() && birthday != null)
-    ) {
-        return false
-    }
-
-    val candidateToUpsert = Candidate(
-        id = candidateId,
-        email = email,
-        phoneNumber = phoneNumber,
-        firstName = firstName,
-        lastName = lastName,
-        birthday = birthday,
-        salary = salary,
-        note = note,
-        avatarPath = avatarPath
-    )
-
-    createCandidateViewModel.upsertCandidate(candidateToUpsert)
-
-    return true
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -402,7 +362,7 @@ private fun CreateCandidateForm(
 }
 
 @Composable
-fun FirstNameTextField(
+private fun FirstNameTextField(
     firstName: String,
     onValueChange: (String) -> Unit,
     firstNameError: String?,
@@ -426,7 +386,7 @@ fun FirstNameTextField(
 }
 
 @Composable
-fun LastNameTextField(
+private fun LastNameTextField(
     lastName: String,
     onValueChange: (String) -> Unit,
     lastNameError: String?
@@ -450,7 +410,7 @@ fun LastNameTextField(
 }
 
 @Composable
-fun PhoneNumberTextField(
+private fun PhoneNumberTextField(
     phoneNumber: String,
     onValueChange: (String) -> Unit,
     phoneNumberError: String?
@@ -470,7 +430,7 @@ fun PhoneNumberTextField(
 }
 
 @Composable
-fun EmailTextField(
+private fun EmailTextField(
     email: String,
     onValueChange: (String) -> Unit,
     emailError: String?
@@ -491,7 +451,7 @@ fun EmailTextField(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DatePicker(
+private fun DatePicker(
     onDateSelected: (Long) -> Unit,
     date: Long?, birthDayError: String?
 ) {
@@ -585,7 +545,7 @@ fun DatePicker(
 }
 
 @Composable
-fun SalaryTextField(
+private fun SalaryTextField(
     salary: Double?,
     onSalaryChanged: (Double) -> Unit
 ) {
@@ -604,7 +564,7 @@ fun SalaryTextField(
 }
 
 @Composable
-fun NoteTextField(
+private fun NoteTextField(
     note: String?,
     onNoteChanged: (String) -> Unit
 ) {
