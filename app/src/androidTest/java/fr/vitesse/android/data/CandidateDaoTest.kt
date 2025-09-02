@@ -29,7 +29,7 @@ class CandidateDaoTest {
     }
 
     @After
-    fun tearDown() {
+    fun closeDb() {
         database.close()
     }
 
@@ -58,20 +58,20 @@ class CandidateDaoTest {
     )
 
     @Test
-    fun upsertAndGetCandidateById_returnsInsertedCandidate() = runTest {
+    fun upsertAndGetCandidateByIdUpsertedCandidate() = runTest {
         val candidate = sampleCandidate()
 
         candidateDao.upsert(candidate)
-        val result = candidateDao.getAll().first().first()
+        val upsertedCandidate = candidateDao.getAll().first().first()
 
-        Assert.assertEquals(candidate.email, result.email)
-        Assert.assertEquals(candidate.firstName, result.firstName)
-        Assert.assertEquals(candidate.lastName, result.lastName)
-        Assert.assertEquals(candidate.phoneNumber, result.phoneNumber)
+        Assert.assertEquals(candidate.email, upsertedCandidate.email)
+        Assert.assertEquals(candidate.firstName, upsertedCandidate.firstName)
+        Assert.assertEquals(candidate.lastName, upsertedCandidate.lastName)
+        Assert.assertEquals(candidate.phoneNumber, upsertedCandidate.phoneNumber)
     }
 
     @Test
-    fun deleteCandidateRemovesCandidateFromDatabase() = runTest {
+    fun deleteCandidate() = runTest {
         val candidate = sampleCandidate()
 
         candidateDao.upsert(candidate)
@@ -84,7 +84,7 @@ class CandidateDaoTest {
     }
 
     @Test
-    fun getAllAllCandidates() = runTest {
+    fun getAllCandidates() = runTest {
         val candidate1 = sampleCandidate(email = "a@example.com", firstName = "Alice", id = 2)
         val candidate2 = sampleCandidate(email = "b@example.com", firstName = "Bob", id = 3)
 
@@ -98,7 +98,7 @@ class CandidateDaoTest {
     }
 
     @Test
-    fun getCandidateFlowByIdCorrectCandidate() = runTest {
+    fun getCandidateFlowById() = runTest {
         val candidate = sampleCandidate(firstName = "Charlie", email = "charlie@example.com")
         candidateDao.upsert(candidate)
         val inserted = candidateDao.getAll().first().first()

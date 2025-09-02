@@ -65,6 +65,8 @@ import fr.vitesse.android.data.Candidate
 import fr.vitesse.android.viewmodel.CreateCandidateViewModel
 import org.koin.androidx.compose.koinViewModel
 import androidx.core.net.toUri
+import fr.vitesse.android.viewmodel.isValidEmail
+import fr.vitesse.android.viewmodel.isValidPhoneNumber
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -534,12 +536,4 @@ fun DatePicker(onDateSelected: (Long) -> Unit, date: Long?, birthDayError: Strin
             }
         }
     }
-}
-
-private fun isValidPhoneNumber(phoneNumber: String): Boolean {
-    return Patterns.PHONE.matcher(phoneNumber).matches()
-}
-
-private fun isValidEmail(email: String): Boolean {
-    return Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }

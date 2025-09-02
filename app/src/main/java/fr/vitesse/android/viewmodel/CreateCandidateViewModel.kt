@@ -1,5 +1,6 @@
 package fr.vitesse.android.viewmodel
 
+import android.util.Patterns
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,4 +33,12 @@ class CreateCandidateViewModel(
             candidateService.upsertCandidate(candidate)
         }
     }
+}
+
+fun isValidPhoneNumber(phoneNumber: String): Boolean {
+    return Patterns.PHONE.matcher(phoneNumber).matches()
+}
+
+fun isValidEmail(email: String): Boolean {
+    return Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }
