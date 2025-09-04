@@ -46,10 +46,11 @@ class CreateCandidateViewModel(
         note: String?
     ): Boolean {
         if (
-            !(firstName.isNotBlank() &&
-                    lastName.isNotBlank() &&
-                    phoneNumber.isNotBlank() &&
-                    email.isNotBlank() && birthday != null)
+            firstName.isBlank() ||
+            lastName.isBlank() ||
+            phoneNumber.isBlank() ||
+            email.isBlank() ||
+            birthday == null
         ) {
             return false
         }

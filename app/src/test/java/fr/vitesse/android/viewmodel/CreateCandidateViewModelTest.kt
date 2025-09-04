@@ -70,4 +70,38 @@ class CreateCandidateViewModelTest {
 
         coVerify { candidateService.upsertCandidate(sampleCandidate) }
     }
+
+    @Test
+    fun testVerifyAndCreateCandidate() = runTest {
+        savedStateHandle = SavedStateHandle()
+        val viewModel = CreateCandidateViewModel(candidateService, savedStateHandle)
+
+        val shouldBeTrueRes = viewModel.verifyAndCreateCandidate(
+            candidateId = sampleCandidate.id,
+            avatarPath = sampleCandidate.avatarPath,
+            firstName = sampleCandidate.firstName,
+            lastName = sampleCandidate.lastName,
+            phoneNumber = sampleCandidate.phoneNumber,
+            email = sampleCandidate.email,
+            birthday = sampleCandidate.birthday,
+            salary = sampleCandidate.salary,
+            note = sampleCandidate.note
+        )
+
+        Assert.assertTrue(shouldBeTrueRes)
+
+        val shouldBeFalseRes = viewModel.verifyAndCreateCandidate(
+            candidateId = 1,
+            avatarPath = null,
+            firstName = "John",
+            lastName = "Doe",
+            phoneNumber = "0123456789",
+            email = "test@example.com",
+            birthday = null,
+            salary = null,
+            note = null
+        )
+
+        Assert.assertFalse(shouldBeFalseRes)
+    }
 }

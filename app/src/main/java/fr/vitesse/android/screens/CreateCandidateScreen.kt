@@ -143,6 +143,8 @@ fun CreateCandidateScreen(
                     formValidationState.value = true
 
                     if (
+                        isValidPhoneNumber(phoneNumber.value) &&
+                        isValidEmail(email.value) &&
                         createCandidateViewModel.verifyAndCreateCandidate(
                             candidate?.id ?: 0,
                             avatarPath.value,
