@@ -72,7 +72,7 @@ class CreateCandidateViewModelTest {
     }
 
     @Test
-    fun testVerifyAndCreateCandidate() = runTest {
+    fun verifyAndCreateCandidate() = runTest {
         savedStateHandle = SavedStateHandle()
         val viewModel = CreateCandidateViewModel(candidateService, savedStateHandle)
 

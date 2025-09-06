@@ -41,7 +41,7 @@ class CandidateRepositoryTest {
     }
 
     @Test
-    fun getCandidateFlowByIdCorrectFlow() = runTest {
+    fun getCandidateFlowById() = runTest {
         val candidate = Candidate(1, "test@mail.com", "1234", "John", "Doe", 0L, null, null, false, null)
         every { dao.getCandidateFlowById(1) } returns flowOf(candidate)
 
@@ -51,7 +51,7 @@ class CandidateRepositoryTest {
     }
 
     @Test
-    fun upsertCandidateCallsDaoUpsert() = runTest {
+    fun upsertCandidateCallsDao() = runTest {
         val candidate = Candidate(1, "test@mail.com", "1234", "John", "Doe", 0L, null, null, false, null)
         coEvery { dao.upsert(candidate) } just Runs
 
