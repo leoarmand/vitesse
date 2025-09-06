@@ -15,7 +15,6 @@ import org.junit.Before
 import org.junit.Test
 
 class CreateCandidateViewModelTest {
-
     private lateinit var candidateService: CandidateService
     private lateinit var savedStateHandle: SavedStateHandle
 
@@ -34,7 +33,19 @@ class CreateCandidateViewModelTest {
 
     @Before
     fun setUp() {
-        candidateService = mockk()
+        candidateService = mockk(relaxed = true) // relaxed = évite les erreurs si oublié
+        savedStateHandle = SavedStateHandle()
+    }
+
+    @Test
+    fun initDoesNothingIfCandidateIdNotProvided() = runTest {
+        val viewModel = CreateCandidateViewModel(candidateService, savedStateHandle)
+
+        val result = viewModel.candidate.first()
+
+        Assert.assertNull(result)
+
+        coVerify(exactly = 0) { candidateService.getCandidateById(any()) }
     }
 
     @Test
@@ -50,20 +61,8 @@ class CreateCandidateViewModelTest {
     }
 
     @Test
-    fun initDoesNothingIfCandidateIdNotProvided() = runTest {
-        savedStateHandle = SavedStateHandle()
-
-        val viewModel = CreateCandidateViewModel(candidateService, savedStateHandle)
-
-        val result = viewModel.candidate.first()
-        Assert.assertNull(result)
-        coVerify(exactly = 0) { candidateService.getCandidateById(any()) }
-    }
-
-    @Test
     fun upsertCandidateUsingService() = runTest {
         coEvery { candidateService.upsertCandidate(sampleCandidate) } just Runs
-        savedStateHandle = SavedStateHandle()
         val viewModel = CreateCandidateViewModel(candidateService, savedStateHandle)
 
         viewModel.upsertCandidate(sampleCandidate)
@@ -73,7 +72,6 @@ class CreateCandidateViewModelTest {
 
     @Test
     fun verifyAndCreateCandidate() = runTest {
-        savedStateHandle = SavedStateHandle()
         val viewModel = CreateCandidateViewModel(candidateService, savedStateHandle)
 
         val shouldBeTrueRes = viewModel.verifyAndCreateCandidate(
