@@ -1,6 +1,7 @@
 package fr.vitesse.android.viewmodel
 
 import android.util.Patterns
+import androidx.compose.material3.SelectableDates
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
+import java.time.LocalDate
 
 @KoinViewModel
 class CreateCandidateViewModel(
@@ -79,4 +81,14 @@ fun isValidPhoneNumber(phoneNumber: String): Boolean {
 
 fun isValidEmail(email: String): Boolean {
     return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+}
+
+object PastOrPresentSelectableDates: SelectableDates {
+    override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+        return utcTimeMillis <= System.currentTimeMillis()
+    }
+
+    override fun isSelectableYear(year: Int): Boolean {
+        return year <= LocalDate.now().year
+    }
 }

@@ -35,6 +35,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -52,6 +53,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -64,6 +66,7 @@ import fr.vitesse.android.components.AvatarComponent
 import fr.vitesse.android.viewmodel.CreateCandidateViewModel
 import org.koin.androidx.compose.koinViewModel
 import androidx.core.net.toUri
+import fr.vitesse.android.viewmodel.PastOrPresentSelectableDates
 import fr.vitesse.android.viewmodel.isValidEmail
 import fr.vitesse.android.viewmodel.isValidPhoneNumber
 import java.text.SimpleDateFormat
@@ -422,7 +425,10 @@ private fun PhoneNumberTextField(
         value = phoneNumber,
         onValueChange = onValueChange,
         label = { Text(stringResource(id = R.string.phone)) },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Phone,
+            imeAction = ImeAction.Next
+        ),
         isError = phoneNumberError != null,
         singleLine = true,
         supportingText = {
@@ -458,14 +464,29 @@ private fun DatePicker(
     date: Long?, birthDayError: String?
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
-    val datePickerState = rememberDatePickerState()
+    val datePickerState = rememberDatePickerState(
+        selectableDates = PastOrPresentSelectableDates
+    )
     val isDateFilled = date != null
     val selectedDate = datePickerState.selectedDateMillis ?: date
     var selectedDateStr =
         stringResource(id = R.string.date_display_pattern)
+    var textFieldColors = OutlinedTextFieldDefaults.colors(
+        disabledTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        disabledBorderColor = MaterialTheme.colorScheme.outline,
+        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        focusedBorderColor = MaterialTheme.colorScheme.outline,
+        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+        cursorColor = Color.Transparent,
+        focusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+    )
     if (isDateFilled) {
         selectedDateStr = SimpleDateFormat(stringResource(id = R.string.birthday_pattern), Locale.getDefault())
             .format(Date(date))
+
+        textFieldColors = OutlinedTextFieldDefaults.colors()
     }
 
     LaunchedEffect(datePickerState.selectedDateMillis) {
@@ -488,7 +509,7 @@ private fun DatePicker(
             Text(
                 modifier = Modifier.padding(16.dp),
                 text = stringResource(id = R.string.select_a_date),
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.titleSmall
             )
         }
         Row(
@@ -498,7 +519,7 @@ private fun DatePicker(
             Text(
                 modifier = Modifier.padding(16.dp),
                 text = stringResource(id = R.string.enter_a_date),
-                style = MaterialTheme.typography.headlineLarge
+                style = MaterialTheme.typography.headlineMedium
             )
             Icon(
                 modifier = Modifier
@@ -527,7 +548,8 @@ private fun DatePicker(
                 isError = birthDayError != null,
                 supportingText = {
                     birthDayError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-                }
+                },
+                colors = textFieldColors
             )
         }
 
