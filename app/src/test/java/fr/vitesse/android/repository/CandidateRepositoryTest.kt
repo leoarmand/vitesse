@@ -43,7 +43,7 @@ class CandidateRepositoryTest {
     @Test
     fun getCandidateFlowById() = runTest {
         val candidate = Candidate(1, "test@mail.com", "1234", "John", "Doe", 0L, null, null, false, null)
-        every { dao.getCandidateFlowById(1) } returns flowOf(candidate)
+        every { dao.getCandidateFlowById(any()) } returns flowOf(candidate)
 
         val result = repository.getCandidateFlowById(1).first()
 
@@ -63,7 +63,7 @@ class CandidateRepositoryTest {
     @Test
     fun getCandidateById() = runTest {
         val candidate = Candidate(1, "test@mail.com", "1234", "John", "Doe", 0L, null, null, false, null)
-        coEvery { dao.getCandidateById(1) } returns candidate
+        coEvery { dao.getCandidateById(any()) } returns candidate
 
         val result = repository.getCandidateById(1)
 
@@ -74,7 +74,7 @@ class CandidateRepositoryTest {
     fun toggleCandidateFavoriteStatus() = runTest {
         val candidate = Candidate(1, "test@mail.com", "1234", "John", "Doe", 0L, null, null, false, null)
         val updated = candidate.copy(isFavorite = true)
-        coEvery { dao.getCandidateById(1) } returns candidate
+        coEvery { dao.getCandidateById(any()) } returns candidate
         coEvery { dao.upsert(updated) } just Runs
 
         repository.toggleCandidateFavorite(1)
@@ -84,7 +84,7 @@ class CandidateRepositoryTest {
 
     @Test
     fun toggleCandidateFavoriteIfCandidateNotFound() = runTest {
-        coEvery { dao.getCandidateById(999) } returns null
+        coEvery { dao.getCandidateById(any()) } returns null
 
         repository.toggleCandidateFavorite(999)
 
@@ -94,7 +94,7 @@ class CandidateRepositoryTest {
     @Test
     fun deleteCandidateCallsDaoDelete() = runTest {
         val candidate = Candidate(1, "test@mail.com", "1234", "John", "Doe", 0L, null, null, false, null)
-        coEvery { dao.delete(candidate) } just Runs
+        coEvery { dao.delete(any()) } just Runs
 
         repository.deleteCandidate(candidate)
 

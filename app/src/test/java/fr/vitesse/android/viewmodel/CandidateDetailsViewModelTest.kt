@@ -45,9 +45,9 @@ class CandidateDetailsViewModelTest {
         candidateService = mockk()
         httpClientModule = mockk()
         actionComposerModule = mockk()
-        savedStateHandle = SavedStateHandle(mapOf("candidateId" to 1))
+        savedStateHandle = SavedStateHandle(mapOf("candidateId" to sampleCandidate.id))
 
-        every { candidateService.getCandidateFlowById(1) } returns MutableStateFlow(sampleCandidate)
+        every { candidateService.getCandidateFlowById(any()) } returns MutableStateFlow(sampleCandidate)
 
         viewModel = CandidateDetailsViewModel(
             candidateService,
@@ -66,11 +66,11 @@ class CandidateDetailsViewModelTest {
 
     @Test
     fun shouldToggleFavorite() = runTest {
-        coEvery { candidateService.toggleCandidateFavorite(1) } just Runs
+        coEvery { candidateService.toggleCandidateFavorite(any()) } just Runs
 
-        viewModel.toggleCandidateFavorite(1)
+        viewModel.toggleCandidateFavorite(sampleCandidate.id)
 
-        coVerify { candidateService.toggleCandidateFavorite(1) }
+        coVerify { candidateService.toggleCandidateFavorite(sampleCandidate.id) }
     }
 
     @Test

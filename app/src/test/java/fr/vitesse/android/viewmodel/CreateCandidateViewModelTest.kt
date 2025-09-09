@@ -45,24 +45,24 @@ class CreateCandidateViewModelTest {
 
         Assert.assertNull(result)
 
-        coVerify(exactly = 0) { candidateService.getCandidateById(any()) }
+        coVerify(exactly = 0) { candidateService.getCandidateById(sampleCandidate.id) }
     }
 
     @Test
     fun initLoadsCandidateIfCandidateIdProvided() = runTest {
-        coEvery { candidateService.getCandidateById(1) } returns sampleCandidate
-        savedStateHandle = SavedStateHandle(mapOf("candidateId" to 1))
+        coEvery { candidateService.getCandidateById(any()) } returns sampleCandidate
+        savedStateHandle = SavedStateHandle(mapOf("candidateId" to sampleCandidate.id))
 
         val viewModel = CreateCandidateViewModel(candidateService, savedStateHandle)
 
         val result = viewModel.candidate.first()
         Assert.assertEquals(sampleCandidate, result)
-        coVerify { candidateService.getCandidateById(1) }
+        coVerify { candidateService.getCandidateById(sampleCandidate.id) }
     }
 
     @Test
     fun upsertCandidateUsingService() = runTest {
-        coEvery { candidateService.upsertCandidate(sampleCandidate) } just Runs
+        coEvery { candidateService.upsertCandidate(any()) } just Runs
         val viewModel = CreateCandidateViewModel(candidateService, savedStateHandle)
 
         viewModel.upsertCandidate(sampleCandidate)
