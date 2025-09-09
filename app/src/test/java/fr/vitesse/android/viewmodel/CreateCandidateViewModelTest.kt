@@ -33,7 +33,7 @@ class CreateCandidateViewModelTest {
 
     @Before
     fun setUp() {
-        candidateService = mockk(relaxed = true) // relaxed = évite les erreurs si oublié
+        candidateService = mockk(relaxed = true)
         savedStateHandle = SavedStateHandle()
     }
 
