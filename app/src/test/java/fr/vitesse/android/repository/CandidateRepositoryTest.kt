@@ -65,7 +65,7 @@ class CandidateRepositoryTest {
         val candidate = Candidate(1, "test@mail.com", "1234", "John", "Doe", 0L, null, null, false, null)
         coEvery { dao.getCandidateById(any()) } returns candidate
 
-        val result = repository.getCandidateById(1)
+        val result = repository.getCandidateById(candidate.id)
 
         Assert.assertEquals(candidate, result)
     }
@@ -77,7 +77,7 @@ class CandidateRepositoryTest {
         coEvery { dao.getCandidateById(any()) } returns candidate
         coEvery { dao.upsert(updated) } just Runs
 
-        repository.toggleCandidateFavorite(1)
+        repository.toggleCandidateFavorite(candidate.id)
 
         coVerify { dao.upsert(updated) }
     }
