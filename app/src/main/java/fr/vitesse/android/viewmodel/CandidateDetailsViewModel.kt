@@ -22,7 +22,9 @@ class CandidateDetailsViewModel (
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _candidate = MutableStateFlow<Candidate?>(null)
+    private val _poundSalary = MutableStateFlow<String?>(null)
     val candidate: StateFlow<Candidate?> = _candidate.asStateFlow()
+    val poundSalary: StateFlow<String?> = _poundSalary.asStateFlow()
 
     init {
         val candidateId: Int? = savedStateHandle["candidateId"]
@@ -30,9 +32,21 @@ class CandidateDetailsViewModel (
             viewModelScope.launch {
                 candidateService.getCandidateFlowById(candidateId).collect { updatedCandidate ->
                     _candidate.value = updatedCandidate
+                    if (updatedCandidate != null && updatedCandidate.salary != null) {
+                        try {
+                            _poundSalary.value = String.format("%.2f £", convertEuroToPounds(updatedCandidate.salary))
+                        } catch (_: Exception) {
+                            val defaultPoundSalary = (updatedCandidate.salary.times(0.86)).toString() + " £"
+                            _poundSalary.value = defaultPoundSalary
+                        }
+                    }
                 }
             }
         }
+    }
+
+    suspend fun convertEuroToPounds(amountInEur: Double): Double {
+        return amountInEur * httpClientModule.getCurrencyApiResponse().eur.gbp
     }
 
     fun toggleCandidateFavorite(candidateId: Int) {
@@ -47,10 +61,6 @@ class CandidateDetailsViewModel (
                 candidateService.deleteCandidate(_candidate.value!!)
             }
         }
-    }
-
-    suspend fun convertEuroToPounds(amountInEur: Double): Double {
-        return amountInEur * httpClientModule.getCurrencyApiResponse().eur.gbp
     }
 
     fun callCandidate() {

@@ -37,7 +37,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -66,10 +65,12 @@ fun CandidateDetailsScreen(
 ) {
     val candidateDetailsViewModel: CandidateDetailsViewModel =
         koinViewModel()
+    val collectedPoundSalary by candidateDetailsViewModel.poundSalary.collectAsStateWithLifecycle()
+    val poundSalary = collectedPoundSalary
     val collectedCandidate by candidateDetailsViewModel.candidate.collectAsStateWithLifecycle()
     val candidate = collectedCandidate
 
-    if (candidate == null) {
+    if (candidate == null || poundSalary == null) {
         return
     }
 
@@ -81,17 +82,6 @@ fun CandidateDetailsScreen(
     {
         val scrollState = rememberScrollState()
         val eurSalary = candidate.salary.toString() + " €"
-
-        val defaultPoundSalary = (candidate.salary?.times(0.86)).toString() + " £"
-        var poundSalary by remember { mutableStateOf(defaultPoundSalary) }
-
-        LaunchedEffect(candidate.salary) {
-            if (candidate.salary != null) {
-                poundSalary = String.format(
-                    "%.2f £", candidateDetailsViewModel.convertEuroToPounds(candidate.salary)
-                )
-            }
-        }
 
         Column(
             modifier = modifier
