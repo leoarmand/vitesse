@@ -48,16 +48,6 @@ class CandidateDetailsViewModel (
         }
     }
 
-    suspend fun convertEuroToPounds(amountInEur: Double): Double {
-        try {
-            val salaryInPounds = amountInEur * httpClientModule.getCurrencyApiResponse().eur.gbp
-            return salaryInPounds
-        } catch (_: Exception) {
-            val fallbackSalaryInPounds = amountInEur * 0.86
-            return fallbackSalaryInPounds
-        }
-    }
-
     fun toggleCandidateFavorite(candidateId: Int) {
         viewModelScope.launch {
             candidateService.toggleCandidateFavorite(candidateId)
@@ -82,6 +72,17 @@ class CandidateDetailsViewModel (
 
     fun sendEmailToCandidate() {
         candidateActionComposerModule.sendEmail(_candidate.value!!.email)
+    }
+
+    @VisibleForTesting
+    suspend fun convertEuroToPounds(amountInEur: Double): Double {
+        try {
+            val salaryInPounds = amountInEur * httpClientModule.getCurrencyApiResponse().eur.gbp
+            return salaryInPounds
+        } catch (_: Exception) {
+            val fallbackSalaryInPounds = amountInEur * 0.86
+            return fallbackSalaryInPounds
+        }
     }
 
     @VisibleForTesting
