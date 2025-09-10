@@ -65,12 +65,11 @@ fun CandidateDetailsScreen(
 ) {
     val candidateDetailsViewModel: CandidateDetailsViewModel =
         koinViewModel()
-    val collectedPoundSalary by candidateDetailsViewModel.poundSalary.collectAsStateWithLifecycle()
-    val poundSalary = collectedPoundSalary
+    val collectedFormattedPoundSalary by candidateDetailsViewModel.formattedPoundSalary.collectAsStateWithLifecycle()
     val collectedCandidate by candidateDetailsViewModel.candidate.collectAsStateWithLifecycle()
     val candidate = collectedCandidate
 
-    if (candidate == null || poundSalary == null) {
+    if (candidate == null || collectedFormattedPoundSalary == null) {
         return
     }
 
@@ -130,7 +129,7 @@ fun CandidateDetailsScreen(
                     CandidateCard(
                         stringResource(id = R.string.salary_expectations),
                         eurSalary,
-                        stringResource(id = R.string.average_amount).lowercase() + " " + poundSalary
+                        stringResource(id = R.string.average_amount).lowercase() + " " + collectedFormattedPoundSalary
                     )
                 }
             }

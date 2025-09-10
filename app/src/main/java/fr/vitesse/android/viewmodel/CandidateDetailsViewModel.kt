@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
+import java.text.NumberFormat
+import java.util.Currency
+import java.util.Locale
 
 @KoinViewModel
 class CandidateDetailsViewModel (
@@ -22,9 +25,9 @@ class CandidateDetailsViewModel (
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _candidate = MutableStateFlow<Candidate?>(null)
-    private val _poundSalary = MutableStateFlow<String?>(null)
+    private val _formattedPoundSalary = MutableStateFlow<String?>(null)
     val candidate: StateFlow<Candidate?> = _candidate.asStateFlow()
-    val poundSalary: StateFlow<String?> = _poundSalary.asStateFlow()
+    val formattedPoundSalary: StateFlow<String?> = _formattedPoundSalary.asStateFlow()
 
     init {
         val candidateId: Int? = savedStateHandle["candidateId"]
@@ -33,12 +36,12 @@ class CandidateDetailsViewModel (
                 candidateService.getCandidateFlowById(candidateId).collect { updatedCandidate ->
                     _candidate.value = updatedCandidate
                     if (updatedCandidate != null && updatedCandidate.salary != null) {
-                        try {
-                            _poundSalary.value = String.format("%.2f £", convertEuroToPounds(updatedCandidate.salary))
-                        } catch (_: Exception) {
-                            val defaultPoundSalary = (updatedCandidate.salary.times(0.86)).toString() + " £"
-                            _poundSalary.value = defaultPoundSalary
+                        val poundSalary = convertEuroToPounds(updatedCandidate.salary)
+                        val poundLocale = Locale.UK
+                        val formatter = NumberFormat.getCurrencyInstance(poundLocale).apply {
+                            this.currency = Currency.getInstance(poundLocale)
                         }
+                        _formattedPoundSalary.value = formatter.format(poundSalary)
                     }
                 }
             }
@@ -46,7 +49,13 @@ class CandidateDetailsViewModel (
     }
 
     suspend fun convertEuroToPounds(amountInEur: Double): Double {
-        return amountInEur * httpClientModule.getCurrencyApiResponse().eur.gbp
+        try {
+            val salaryInPounds = amountInEur * httpClientModule.getCurrencyApiResponse().eur.gbp
+            return salaryInPounds
+        } catch (_: Exception) {
+            val fallbackSalaryInPounds = amountInEur * 0.86
+            return fallbackSalaryInPounds
+        }
     }
 
     fun toggleCandidateFavorite(candidateId: Int) {
