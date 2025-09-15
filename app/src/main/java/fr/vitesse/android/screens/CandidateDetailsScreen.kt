@@ -69,7 +69,7 @@ fun CandidateDetailsScreen(
     val collectedCandidate by candidateDetailsViewModel.candidate.collectAsStateWithLifecycle()
     val candidate = collectedCandidate
 
-    if (candidate == null || collectedFormattedPoundSalary == null) {
+    if (candidate == null) {
         return
     }
 
