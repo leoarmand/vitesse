@@ -73,78 +73,6 @@ fun CandidateDetailsScreen(
         return
     }
 
-    @Composable
-    fun CandidateDetails(
-        modifier: Modifier = Modifier,
-        candidate: Candidate
-    )
-    {
-        val scrollState = rememberScrollState()
-        val eurSalary = candidate.salary.toString() + " €"
-
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            AvatarComponent(avatarUri = candidate.avatarPath?.toUri())
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                CandidateAction(
-                    imageVector = Icons.Outlined.Call,
-                    text = stringResource(id = R.string.call),
-                    onClick = {
-                        candidateDetailsViewModel.callCandidate()
-                    }
-                )
-                CandidateAction(
-                    imageVector = Icons.AutoMirrored.Outlined.Chat,
-                    text = stringResource(id = R.string.sms),
-                    onClick = {
-                        candidateDetailsViewModel.sendSmsToCandidate()
-                    }
-                )
-                CandidateAction(
-                    imageVector = Icons.Outlined.Mail,
-                    text = stringResource(id = R.string.email),
-                    onClick = {
-                        candidateDetailsViewModel.sendEmailToCandidate()
-                    }
-                )
-            }
-            Row {
-                CandidateCard(
-                    stringResource(id = R.string.about),
-                    candidate.formatDateWithAge(),
-                    stringResource(id = R.string.birthday)
-                )
-            }
-            if (candidate.salary != null) {
-                Row {
-                    CandidateCard(
-                        stringResource(id = R.string.salary_expectations),
-                        eurSalary,
-                        stringResource(id = R.string.average_amount).lowercase() + " " + collectedFormattedPoundSalary
-                    )
-                }
-            }
-            if (candidate.note != null) {
-                Row {
-                    CandidateCard(
-                        stringResource(id = R.string.notes),
-                        candidate.note,
-                        subtitle2 = null
-                    )
-                }
-            }
-        }
-    }
-
     var showDeleteDialog by remember { mutableStateOf(false) }
     if (showDeleteDialog) {
         AlertDialog(
@@ -228,7 +156,83 @@ fun CandidateDetailsScreen(
         CandidateDetails(
             modifier = modifier.padding(contentPadding),
             candidate = candidate,
+            candidateDetailsViewModel,
+            collectedFormattedPoundSalary
         )
+    }
+}
+
+@Composable
+fun CandidateDetails(
+    modifier: Modifier = Modifier,
+    candidate: Candidate,
+    candidateDetailsViewModel: CandidateDetailsViewModel,
+    collectedFormattedPoundSalary: String?
+)
+{
+    val scrollState = rememberScrollState()
+    val eurSalary = candidate.salary.toString() + " €"
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        AvatarComponent(avatarUri = candidate.avatarPath?.toUri())
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            CandidateAction(
+                imageVector = Icons.Outlined.Call,
+                text = stringResource(id = R.string.call),
+                onClick = {
+                    candidateDetailsViewModel.callCandidate()
+                }
+            )
+            CandidateAction(
+                imageVector = Icons.AutoMirrored.Outlined.Chat,
+                text = stringResource(id = R.string.sms),
+                onClick = {
+                    candidateDetailsViewModel.sendSmsToCandidate()
+                }
+            )
+            CandidateAction(
+                imageVector = Icons.Outlined.Mail,
+                text = stringResource(id = R.string.email),
+                onClick = {
+                    candidateDetailsViewModel.sendEmailToCandidate()
+                }
+            )
+        }
+        Row {
+            CandidateCard(
+                stringResource(id = R.string.about),
+                candidate.formatDateWithAge(),
+                stringResource(id = R.string.birthday)
+            )
+        }
+        if (candidate.salary != null) {
+            Row {
+                CandidateCard(
+                    stringResource(id = R.string.salary_expectations),
+                    eurSalary,
+                    stringResource(id = R.string.average_amount).lowercase() + " " + collectedFormattedPoundSalary
+                )
+            }
+        }
+        if (candidate.note != null) {
+            Row {
+                CandidateCard(
+                    stringResource(id = R.string.notes),
+                    candidate.note,
+                    subtitle2 = null
+                )
+            }
+        }
     }
 }
 
@@ -237,18 +241,18 @@ private fun CandidateFavoriteIcon(
     isFavorite: Boolean,
 ) {
     if (isFavorite) {
-        return Icon(
+        Icon(
             imageVector = Icons.Filled.Star,
             contentDescription = stringResource(id = R.string.favorite),
             tint = MaterialTheme.colorScheme.onSurface
         )
+    } else {
+        Icon(
+            painter = painterResource(R.drawable.outlined_star_24),
+            contentDescription = stringResource(id = R.string.favorite),
+            tint = MaterialTheme.colorScheme.onSurface
+        )
     }
-
-    return Icon(
-        painter = painterResource(R.drawable.outlined_star_24),
-        contentDescription = stringResource(id = R.string.favorite),
-        tint = MaterialTheme.colorScheme.onSurface
-    )
 }
 
 @Composable
